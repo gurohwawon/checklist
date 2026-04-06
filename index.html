@@ -992,6 +992,38 @@ input[type="tel"].form-input {
   white-space: nowrap;
   letter-spacing: -0.02em;
 }
+
+/* ── 욕구내용 선택 그리드 ── */
+.needs-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 8px;
+}
+.needs-item {
+  cursor: pointer;
+  display: block;
+}
+.needs-item input[type="checkbox"] {
+  display: none;
+}
+.needs-content {
+  border: 2px solid var(--gray-200);
+  border-radius: 12px;
+  padding: 16px 12px;
+  text-align: center;
+  transition: all 0.2s;
+  background: #fff;
+}
+.needs-item input:checked + .needs-content {
+  border-color: var(--primary);
+  background: #EEF4FF;
+  box-shadow: 0 0 0 3px rgba(0,82,164,0.12);
+}
+.needs-icon { font-size: 28px; margin-bottom: 6px; }
+.needs-label { font-size: 14px; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+.needs-desc { font-size: 11px; color: var(--gray-500); line-height: 1.4; }
+@media (max-width: 360px) { .needs-grid { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -1183,6 +1215,13 @@ input[type="tel"].form-input {
                 <option value="">선택해 주세요</option>
                 <option>양호</option><option>불량(위생불량)</option><option>불량(안전문제)</option><option>불량(기타)</option>
               </select>
+            </div>
+            <div class="form-group form-full">
+              <label class="form-label required">이용자 구분</label>
+              <div class="radio-group">
+                <label class="radio-item"><input type="radio" name="userType" value="기존 이용자"> 기존 이용자</label>
+                <label class="radio-item"><input type="radio" name="userType" value="신규 이용자"> 신규 이용자</label>
+              </div>
             </div>
           </div>
 
@@ -1502,13 +1541,64 @@ input[type="tel"].form-input {
 
           <div class="btn-row">
             <button class="btn-secondary" id="consentBackBtn" onclick="goConsentBack()">이전</button>
-            <button class="btn-primary" onclick="validateStep5()">제출하기</button>
+            <button class="btn-primary" onclick="validateStep5()">다음</button>
           </div>
         </div>
       </section>
 
-      <!-- ───────────── STEP 6: 결과 화면 ───────────── -->
+      <!-- ───────────── STEP 6: 욕구내용 ───────────── -->
       <section class="step" id="step-6">
+        <div class="card">
+          <div class="section-header">
+            <span class="section-badge">마지막 단계</span>
+            <h2 class="section-title">필요한 서비스 선택</h2>
+            <p class="section-desc">필요하신 서비스를 모두 선택해 주세요. <span class="emphasis-text">(중복 선택 가능)</span></p>
+          </div>
+          <div class="q-block">
+            <div class="needs-grid">
+              <label class="needs-item">
+                <input type="checkbox" name="needs" value="심리·정서 지원">
+                <div class="needs-content">
+                  <div class="needs-icon">💙</div>
+                  <div class="needs-label">심리·정서 지원</div>
+                  <div class="needs-desc">상담, 정서적 지지, 마음건강 케어</div>
+                </div>
+              </label>
+              <label class="needs-item">
+                <input type="checkbox" name="needs" value="생활·경제 자원 연결">
+                <div class="needs-content">
+                  <div class="needs-icon">🤝</div>
+                  <div class="needs-label">생활·경제 자원 연결</div>
+                  <div class="needs-desc">생활지원, 경제적 어려움 해소</div>
+                </div>
+              </label>
+              <label class="needs-item">
+                <input type="checkbox" name="needs" value="취미·연결 관계맺기">
+                <div class="needs-content">
+                  <div class="needs-icon">🌱</div>
+                  <div class="needs-label">취미·연결 관계맺기</div>
+                  <div class="needs-desc">여가활동, 사회적 관계 형성</div>
+                </div>
+              </label>
+              <label class="needs-item">
+                <input type="checkbox" name="needs" value="맞춤형 정보 제공">
+                <div class="needs-content">
+                  <div class="needs-icon">📋</div>
+                  <div class="needs-label">맞춤형 정보 제공</div>
+                  <div class="needs-desc">복지 서비스·제도 안내</div>
+                </div>
+              </label>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn-secondary" onclick="goStep(5)">이전</button>
+            <button class="btn-primary" onclick="submitNeeds()">제출하기</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ───────────── STEP 7: 결과 화면 ───────────── -->
+      <section class="step" id="step-7">
         <div class="card result-card">
           <div class="result-check">✓</div>
           <h2 class="result-title">응답이 완료되었습니다</h2>
