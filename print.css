@@ -1,0 +1,72 @@
+
+  /* ── 인쇄 오버레이 기본 ── */
+  #printOverlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: #eee; overflow-y: auto; z-index: 9999;
+  }
+  .po-screen-only {
+    display: flex; gap: 12px; justify-content: center; align-items: center;
+    padding: 16px; background: #f0f4fa; border-bottom: 2px solid #0052A4;
+    position: sticky; top: 0; z-index: 10;
+  }
+  .po-btn-print {
+    background: #0052A4; color: #fff; border: none;
+    padding: 10px 28px; font-size: 15px; font-weight: 700;
+    border-radius: 6px; cursor: pointer; font-family: inherit;
+  }
+  .po-btn-print:hover { background: #003A8C; }
+  .po-btn-back {
+    background: #fff; color: #0052A4; border: 2px solid #0052A4;
+    padding: 10px 20px; font-size: 14px; font-weight: 600;
+    border-radius: 6px; cursor: pointer; font-family: inherit;
+  }
+  /* ── A4 페이지 ── */
+  .po-page {
+    width: 210mm; min-height: 297mm;
+    margin: 16px auto; padding: 15mm 18mm;
+    background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+    page-break-after: always;
+    font-family: 'Malgun Gothic','맑은 고딕','Noto Sans KR',sans-serif;
+    font-size: 9pt; color: #000;
+  }
+  .po-page:last-child { page-break-after: auto; }
+  .po-side-label { text-align:right; font-size:8pt; color:#555; margin-bottom:4pt; }
+  .po-page-header { text-align:center; margin-bottom:8pt; border-bottom:2px solid #000; padding-bottom:5pt; }
+  .po-main-title { font-size:13pt; font-weight:700; margin-bottom:2pt; }
+  .po-sub-title { font-size:9pt; color:#333; }
+  /* 표 */
+  .po-table { width:100%; border-collapse:collapse; margin-bottom:6pt; font-size:8.5pt; }
+  .po-table th, .po-table td { border:1px solid #000; padding:3pt 4pt; vertical-align:middle; }
+  .po-table th { background:#d9e1f2; font-weight:700; text-align:center; }
+  .po-num { width:20pt; text-align:center; font-weight:700; background:#EEF2FA; }
+  .po-center { text-align:center; }
+  .po-lbl { background:#f2f2f2; font-weight:600; white-space:nowrap; text-align:center; width:60pt; }
+  .po-val { font-weight:600; }
+  .po-td-sub { background:#fafafa; font-weight:600; font-size:8pt; }
+  /* 영역 타이틀 */
+  .po-sec-title { font-size:9.5pt; font-weight:700; background:#1F3864; color:#fff; padding:3pt 6pt; margin:6pt 0 0; }
+  .po-sec-note { font-size:7.5pt; color:#555; margin:2pt 0 3pt; }
+  .po-eval-row td { background:#FFF2CC; font-size:8pt; font-weight:600; }
+  /* 동의서 */
+  .po-consent-title { background:#1F3864; color:#fff; font-size:11pt; font-weight:700; text-align:center; padding:5pt; margin-bottom:5pt; }
+  .po-consent-intro { font-size:7.5pt; line-height:1.6; margin-bottom:6pt; border:1px solid #aaa; padding:4pt 6pt; background:#fafafa; }
+  .po-csub-title { font-size:8.5pt; font-weight:700; background:#D9E1F2; padding:2pt 5pt; margin:4pt 0 2pt; }
+  .po-consent-agree { display:flex; gap:16pt; padding:3pt 0; font-size:8.5pt; }
+  /* 최종 서명 */
+  .po-final-sign { border:1px solid #000; padding:6pt 8pt; margin-top:8pt; text-align:center; }
+  .po-final-sign-title { font-size:8pt; margin-bottom:6pt; }
+  .po-date-row { text-align:right; font-size:9pt; margin:8pt 0 4pt; }
+  .po-agency-row { text-align:right; font-size:9pt; font-weight:700; }
+  .po-final-fields { display:flex; justify-content:space-around; gap:12pt; }
+  .po-final-field { flex:1; text-align:center; }
+  .po-final-line { border-bottom:1px solid #000; height:40pt; margin-bottom:2pt; display:flex; align-items:center; justify-content:center; }
+  .po-final-field-label { font-size:8pt; color:#555; }
+  /* ── 인쇄 전용 CSS ── */
+  @media print {
+    body > * { display: none !important; }
+    #printOverlay { display: block !important; position: static !important; overflow: visible !important; background: #fff !important; }
+    .po-screen-only { display: none !important; }
+    .po-page { margin: 0 !important; box-shadow: none !important; padding: 12mm 16mm !important; }
+    @page { size: A4; margin: 0; }
+  }
+  
