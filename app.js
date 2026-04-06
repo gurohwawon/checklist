@@ -8,7 +8,7 @@ let currentStep = 0;
 let needsCrisisSection = false; // 위기상황 섹션 진입 여부
 
 // Google Apps Script 웹앱 엔드포인트 (배포 후 교체)
-const SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbx9K0rAAIKk7ybnezfmYe3Zjr-cdz9Dw5I8s5FsJhFNoTZ_smJDcy--DwYXb2rWWuwK/exec';
+const SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycby4BKv1OWRSPFquKCfnAYAwufevCmIwkfOJ65IoXB5jBRYhOy9CFRgevzHcP7NJWa_A/exec';
 
 const TOTAL_STEPS = 6; // 0~6
 
