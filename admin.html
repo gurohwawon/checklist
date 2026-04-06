@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>결과지 관리 — 화원종합사회복지관</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Noto Sans KR', 'Malgun Gothic', sans-serif; background: #f0f4fa; color: #1a2a4a; min-height: 100vh; }
+
+    /* ── 로그인 ── */
+    #loginScreen { display:flex; align-items:center; justify-content:center; min-height:100vh; padding:24px; }
+    .login-card { background:#fff; border-radius:16px; padding:40px 36px; width:100%; max-width:380px; box-shadow:0 4px 24px rgba(0,82,164,0.12); text-align:center; }
+    .login-logo { width:52px;height:52px;background:#0052A4;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;margin:0 auto 16px; }
+    .login-title { font-size:18px;font-weight:700;margin-bottom:4px; }
+    .login-sub { font-size:13px;color:#666;margin-bottom:28px; }
+    .login-input { width:100%;border:1.5px solid #c5cfe0;border-radius:8px;padding:12px 14px;font-size:15px;font-family:inherit;outline:none;margin-bottom:14px;letter-spacing:4px;text-align:center; }
+    .login-input:focus { border-color:#0052A4; }
+    .login-btn { width:100%;background:#0052A4;color:#fff;border:none;border-radius:8px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit; }
+    .login-btn:hover { background:#003A8C; }
+    .login-err { color:#C62828;font-size:13px;margin-top:8px;display:none; }
+
+    /* ── 관리자 화면 ── */
+    #adminScreen { display:none; }
+    .admin-header { background:#0052A4;color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between; }
+    .admin-header-left { display:flex;align-items:center;gap:12px; }
+    .admin-header img { height:32px;filter:brightness(0) invert(1); }
+    .admin-header-title { font-size:15px;font-weight:700; }
+    .admin-header-sub { font-size:11px;opacity:0.8; }
+    .btn-logout { background:rgba(255,255,255,0.18);color:#fff;border:1px solid rgba(255,255,255,0.4);border-radius:6px;padding:6px 14px;font-size:13px;font-family:inherit;cursor:pointer; }
+
+    .admin-body { padding:20px; max-width:1000px; margin:0 auto; }
+
+    /* 연결 설정 */
+    .sheet-setup { background:#fff;border-radius:12px;padding:18px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,82,164,0.07); }
+    .sheet-setup-title { font-size:13px;font-weight:700;color:#0052A4;margin-bottom:10px; }
+    .sheet-input-row { display:flex;gap:8px; }
+    .sheet-url-input { flex:1;border:1.5px solid #c5cfe0;border-radius:8px;padding:9px 12px;font-size:13px;font-family:inherit;outline:none; }
+    .sheet-url-input:focus { border-color:#0052A4; }
+    .btn-load { background:#0052A4;color:#fff;border:none;border-radius:8px;padding:0 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap; }
+    .btn-load:hover { background:#003A8C; }
+    .setup-hint { font-size:11px;color:#888;margin-top:6px; }
+
+    /* 검색/필터 */
+    .filter-bar { background:#fff;border-radius:12px;padding:14px 16px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,82,164,0.07);display:flex;gap:8px;flex-wrap:wrap;align-items:center; }
+    .filter-input { flex:1;min-width:140px;border:1.5px solid #c5cfe0;border-radius:8px;padding:8px 12px;font-size:13px;font-family:inherit;outline:none; }
+    .filter-input:focus { border-color:#0052A4; }
+
+    /* 목록 */
+    .data-wrap { background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,82,164,0.07);overflow:hidden; }
+    .data-head { background:#0052A4;color:#fff;padding:11px 18px;font-size:13px;font-weight:700;display:flex;justify-content:space-between;align-items:center; }
+    .data-table { width:100%;border-collapse:collapse;font-size:13px; }
+    .data-table th { background:#eef3fb;padding:9px 10px;text-align:left;font-weight:700;border-bottom:1px solid #dce3ee;white-space:nowrap; }
+    .data-table td { padding:9px 10px;border-bottom:1px solid #f0f4fa;vertical-align:middle; }
+    .data-table tr:hover td { background:#f7faff; }
+    .type-badge { display:inline-block;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:700;white-space:nowrap; }
+    .btn-print-result { background:#0052A4;color:#fff;border:none;border-radius:6px;padding:5px 13px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit; }
+    .btn-print-result:hover { background:#003A8C; }
+    .empty-state { text-align:center;padding:48px 20px;color:#888;font-size:14px; }
+
+    /* ── 인쇄 오버레이 ── */
+    #printOverlay { display:none; }
+    .po-screen-only { display:flex;gap:12px;justify-content:center;align-items:center;padding:14px;background:#f0f4fa;border-bottom:2px solid #0052A4;position:sticky;top:0;z-index:10; }
+    .po-btn-print { background:#0052A4;color:#fff;border:none;padding:10px 28px;font-size:15px;font-weight:700;border-radius:6px;cursor:pointer;font-family:inherit; }
+    .po-btn-print:hover { background:#003A8C; }
+    .po-btn-back { background:#fff;color:#0052A4;border:2px solid #0052A4;padding:10px 20px;font-size:14px;font-weight:600;border-radius:6px;cursor:pointer;font-family:inherit; }
+    /* A4 인쇄 스타일 */
+    .po-page { width:210mm;min-height:297mm;margin:16px auto;padding:15mm 18mm;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,0.12);page-break-after:always;font-family:'Malgun Gothic','맑은 고딕','Noto Sans KR',sans-serif;font-size:9pt;color:#000; }
+    .po-page:last-child { page-break-after:auto; }
+    .po-side-label { text-align:right;font-size:8pt;color:#555;margin-bottom:4pt; }
+    .po-page-header { text-align:center;margin-bottom:8pt;border-bottom:2px solid #000;padding-bottom:5pt; }
+    .po-main-title { font-size:13pt;font-weight:700;margin-bottom:2pt; }
+    .po-sub-title { font-size:9pt;color:#333; }
+    .po-table { width:100%;border-collapse:collapse;margin-bottom:6pt;font-size:8.5pt; }
+    .po-table th, .po-table td { border:1px solid #000;padding:3pt 4pt;vertical-align:middle; }
+    .po-table th { background:#d9e1f2;font-weight:700;text-align:center; }
+    .po-num { width:20pt;text-align:center;font-weight:700;background:#EEF2FA; }
+    .po-center { text-align:center; }
+    .po-lbl { background:#f2f2f2;font-weight:600;white-space:nowrap;text-align:center;width:60pt; }
+    .po-val { font-weight:600; }
+    .po-td-sub { background:#fafafa;font-weight:600;font-size:8pt; }
+    .po-sec-title { font-size:9.5pt;font-weight:700;background:#1F3864;color:#fff;padding:3pt 6pt;margin:6pt 0 0; }
+    .po-sec-note { font-size:7.5pt;color:#555;margin:2pt 0 3pt; }
+    .po-eval-row td { background:#FFF2CC;font-size:8pt;font-weight:600; }
+    .po-consent-title { background:#1F3864;color:#fff;font-size:11pt;font-weight:700;text-align:center;padding:5pt;margin-bottom:5pt; }
+    .po-consent-intro { font-size:7.5pt;line-height:1.6;margin-bottom:6pt;border:1px solid #aaa;padding:4pt 6pt;background:#fafafa; }
+    .po-csub-title { font-size:8.5pt;font-weight:700;background:#D9E1F2;padding:2pt 5pt;margin:4pt 0 2pt; }
+    .po-consent-agree { display:flex;gap:16pt;padding:3pt 0;font-size:8.5pt; }
+    .po-final-sign { border:1px solid #000;padding:6pt 8pt;margin-top:8pt;text-align:center; }
+    .po-final-sign-title { font-size:8pt;margin-bottom:6pt; }
+    .po-date-row { text-align:right;font-size:9pt;margin:8pt 0 4pt; }
+    .po-agency-row { text-align:right;font-size:9pt;font-weight:700; }
+    .po-final-fields { display:flex;justify-content:space-around;gap:12pt; }
+    .po-final-field { flex:1;text-align:center; }
+    .po-final-line { border-bottom:1px solid #000;height:40pt;margin-bottom:2pt;display:flex;align-items:center;justify-content:center; }
+    .po-final-field-label { font-size:8pt;color:#555; }
+
+    @media print {
+      body > *:not(#printOverlay) { display:none !important; }
+      #printOverlay { display:block !important;position:static !important;overflow:visible !important;background:#fff !important; }
+      .po-screen-only { display:none !important; }
+      .po-page { margin:0 !important;box-shadow:none !important;padding:12mm 16mm !important; }
+      @page { size:A4;margin:0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- 로그인 -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">🔐</div>
+    <div class="login-title">관리자 로그인</div>
+    <div class="login-sub">화원종합사회복지관 사례관리팀 전용</div>
+    <input type="password" id="pwInput" class="login-input" placeholder="비밀번호 입력"
+      onkeydown="if(event.key==='Enter') doLogin()" maxlength="20" />
+    <button class="login-btn" onclick="doLogin()">로그인</button>
+    <div class="login-err" id="loginErr">비밀번호가 올바르지 않습니다.</div>
+  </div>
+</div>
+
+<!-- 관리자 대시보드 -->
+<div id="adminScreen">
+  <div class="admin-header">
+    <div class="admin-header-left">
+      <img src="logo-hwawon.png" alt="화원종합사회복지관" />
+      <div>
+        <div class="admin-header-title">결과지 관리</div>
+        <div class="admin-header-sub">서울시 외로움·고립위험 체크리스트 응답 데이터</div>
+      </div>
+    </div>
+    <button class="btn-logout" onclick="doLogout()">로그아웃</button>
+  </div>
+
+  <div class="admin-body">
+
+    <!-- Google Sheets 연결 -->
+    <div class="sheet-setup">
+      <div class="sheet-setup-title">📊 Google Sheets 연결 (Apps Script 엔드포인트)</div>
+      <div class="sheet-input-row">
+        <input type="text" id="scriptUrl" class="sheet-url-input"
+          placeholder="https://script.google.com/macros/s/AKfy.../exec" value="https://script.google.com/macros/s/AKfycbz5X38sqo4OkQRC3yWKMoa5G2VkYXnfiQjeSJPhRQOKjZdMmRUAjG2gldSzTiu3Q1zM/exec" />
+        <button class="btn-load" onclick="loadData()">불러오기</button>
+      </div>
+      <div class="setup-hint">※ 구글 시트에 연결된 Apps Script 배포 URL을 입력하세요.</div>
+    </div>
+
+    <!-- 검색/필터 -->
+    <div class="filter-bar">
+      <input type="text" id="searchInput" class="filter-input"
+        placeholder="성명 또는 생년월일 검색..." oninput="filterTable()" />
+      <select id="dongFilter" class="filter-input" style="flex:0 0 auto;min-width:110px;" onchange="filterTable()">
+        <option value="">전체 동</option>
+        <option>가리봉동</option>
+        <option>개봉1동</option><option>개봉2동</option><option>개봉3동</option>
+        <option>고척1동</option><option>고척2동</option>
+        <option>구로1동</option><option>구로2동</option><option>구로3동</option><option>구로4동</option><option>구로5동</option>
+        <option>궁동</option><option>남구로동</option><option>신도림동</option>
+        <option>오류1동</option><option>오류2동</option><option>온수동</option><option>천왕동</option><option>항동</option>
+      </select>
+      <select id="typeFilter" class="filter-input" style="flex:0 0 auto;min-width:120px;" onchange="filterTable()">
+        <option value="">전체 유형</option>
+        <option>관계지원군</option><option>일상지원군</option>
+        <option>일상위험고립군</option><option>집중관리군</option><option>긴급위기군</option>
+      </select>
+    </div>
+
+    <!-- 데이터 목록 -->
+    <div class="data-wrap">
+      <div class="data-head">
+        <span>응답 목록</span>
+        <span id="rowCount" style="font-size:12px;font-weight:400;"></span>
+      </div>
+      <div id="tableContainer">
+        <div class="empty-state">Apps Script URL을 입력하고 "불러오기"를 클릭하세요.</div>
+      </div>
+    </div>
+
+  </div><!-- /admin-body -->
+</div><!-- /adminScreen -->
+
+<!-- ═══ 인쇄 오버레이 (결과지 A4 3페이지) ═══ -->
+<div id="printOverlay">
+  <div class="po-screen-only">
+    <button class="po-btn-back" onclick="closePrint()">← 목록으로</button>
+    <button class="po-btn-print" onclick="window.print()">🖨️ 인쇄 / PDF 저장</button>
+  </div>
+
+  <!-- PAGE 1 — 체크리스트 질문지 -->
+  <div class="po-page">
+    <div class="po-side-label">(1면)</div>
+    <div class="po-page-header">
+      <div class="po-main-title">서울시 외로움 및 고립위험 체크리스트 질문지</div>
+      <div class="po-sub-title">▣ 귀하는 아래의 상황에 대해 어떻게 경험하고 계신지 정도를 점수로 기입하거나 V표 해주세요.</div>
+    </div>
+
+    <div class="po-sec-title">관계 단절 상황 (5문항)</div>
+    <div class="po-sec-note">외로움 관련 (지난 4주간(한달)의 상황에 대한 질문임)</div>
+    <table class="po-table">
+      <colgroup><col style="width:18pt"/><col/><col style="width:130pt"/><col style="width:26pt"/></colgroup>
+      <thead><tr><th>번호</th><th>문항</th><th>답변</th><th>점수</th></tr></thead>
+      <tbody>
+        <tr><td class="po-num">1-1</td><td>나는 같이 있어 줄 사람이 부족하다고 자주 느낀다.</td><td id="po_q1_1_ans"></td><td id="po_q1_1_score" class="po-center"></td></tr>
+        <tr><td class="po-num">1-2</td><td>나는 혼자 남겨진 것 같다고 자주 느낀다.</td><td id="po_q1_2_ans"></td><td id="po_q1_2_score" class="po-center"></td></tr>
+        <tr><td class="po-num">1-3</td><td>나는 사람들 사이에서 고립되어 있다고 자주 느낀다.</td><td id="po_q1_3_ans"></td><td id="po_q1_3_score" class="po-center"></td></tr>
+        <tr><td colspan="3" style="text-align:right;font-weight:700;background:#EEF2FA;">외로움 점수 합계</td><td id="po_lonely_total" class="po-center" style="font-weight:700;"></td></tr>
+      </tbody>
+    </table>
+    <div class="po-sec-note">사회적 고립 관련 (도움 줄 사람은 가족·친구·이웃·동료 및 공공기관 담당자도 포함)</div>
+    <table class="po-table">
+      <colgroup><col style="width:18pt"/><col/><col style="width:130pt"/><col style="width:26pt"/></colgroup>
+      <tbody>
+        <tr><td class="po-num">1-4</td><td>나는 몸이 아파서 도움이 필요할 때 도움 줄 사람이 있다.</td><td id="po_q1_4_ans"></td><td id="po_q1_4_score" class="po-center"></td></tr>
+        <tr><td class="po-num">1-5</td><td>나는 낙심하거나 우울해서 이야기상대가 필요할 때 들어줄 사람이 있다.</td><td id="po_q1_5_ans"></td><td id="po_q1_5_score" class="po-center"></td></tr>
+        <tr><td colspan="3" style="text-align:right;font-weight:700;background:#EEF2FA;">사회적 고립 점수 합계</td><td id="po_isolation_total" class="po-center" style="font-weight:700;"></td></tr>
+      </tbody>
+    </table>
+    <table class="po-table"><tbody><tr class="po-eval-row"><td>[도움필요 기준] 외로움 5점 이상이고 사회적 고립 1점 이상 : 해당 여부 → <span id="po_rel_eval" style="margin-left:8pt;"></span></td></tr></tbody></table>
+
+    <div class="po-sec-title" style="margin-top:8pt;">일상생활 관리 상황 (7문항)</div>
+    <div class="po-sec-note">일상생활유지와 은둔 외출 관련 (지난 4주간(한달)의 상황에 대한 질문임)</div>
+    <table class="po-table">
+      <colgroup><col style="width:18pt"/><col/><col style="width:50pt"/><col style="width:50pt"/></colgroup>
+      <thead><tr><th>번호</th><th>문항</th><th style="background:#d9e1f2;">그렇다</th><th style="background:#FCE4D6;">아니다</th></tr></thead>
+      <tbody id="po_daily_rows"></tbody>
+    </table>
+    <table class="po-table"><tbody><tr class="po-eval-row"><td>[도움필요 기준] 아니다 2개 이상 : 해당 여부 → <span id="po_daily_eval" style="margin-left:8pt;"></span></td></tr></tbody></table>
+
+    <div style="border:1px solid #aaa;padding:4pt 6pt;margin:6pt 0;font-size:8pt;background:#FFFDE7;">
+      ▣ 중간점검 : 관계단절상황과 일상생활관리상황 모두 '도움필요'시 아래 응답 진행
+    </div>
+
+    <div class="po-sec-title">위기 상황 (6문항)</div>
+    <table class="po-table">
+      <colgroup><col style="width:18pt"/><col/><col style="width:50pt"/><col style="width:50pt"/></colgroup>
+      <thead><tr><th>번호</th><th>문항</th><th style="background:#d9e1f2;">그렇다</th><th style="background:#FCE4D6;">아니다</th></tr></thead>
+      <tbody id="po_crisis_rows"></tbody>
+    </table>
+    <table class="po-table"><tbody><tr class="po-eval-row"><td id="po_crisis_eval">*3-2·3-3문항 그렇다 1개 이상 긴급위기 해당 □ &nbsp;&nbsp; *이외 문항 그렇다 2개 이상 일반위기 □ &nbsp;&nbsp; 해당없음 □</td></tr></tbody></table>
+
+    <div style="margin-top:8pt;font-size:8pt;font-weight:700;">▣ 유형판별 : 각 상황별 평가를 바탕으로 유형 판별 해당란에 ∨요망</div>
+    <table class="po-table" style="margin-top:4pt;">
+      <thead><tr><th>관계지원군</th><th>일상지원군</th><th>일상위험고립군</th><th>집중관리군</th><th>긴급위기군</th></tr></thead>
+      <tbody>
+        <tr>
+          <td id="po_type_rel" class="po-center" style="font-size:11pt;"></td>
+          <td id="po_type_daily" class="po-center" style="font-size:11pt;"></td>
+          <td id="po_type_iso" class="po-center" style="font-size:11pt;"></td>
+          <td id="po_type_int" class="po-center" style="font-size:11pt;"></td>
+          <td id="po_type_emg" class="po-center" style="font-size:11pt;"></td>
+        </tr>
+        <tr style="font-size:7pt;color:#555;">
+          <td class="po-center">관계단절상황만</td>
+          <td class="po-center">일상관리상황만</td>
+          <td class="po-center">관계+일상 도움필요+위기없음</td>
+          <td class="po-center">일반위기해당</td>
+          <td class="po-center">긴급위기해당</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="text-align:center;margin-top:10pt;font-size:8pt;color:#555;">- 1 -</div>
+  </div>
+
+  <!-- PAGE 2 — 일반사항 / 기본현황 -->
+  <div class="po-page">
+    <div class="po-side-label">(2면)</div>
+    <div class="po-page-header">
+      <div class="po-main-title">서울시 외로움 및 고립위험 체크리스트 질문지</div>
+      <div class="po-sub-title">▣ 일반사항 (인구사회 영역과 서비스 이용관련) 내용입니다.</div>
+    </div>
+    <div class="po-sec-title">조사대상자 기본 현황</div>
+    <table class="po-table" style="margin-top:4pt;">
+      <colgroup><col style="width:45pt"/><col/><col style="width:45pt"/><col/></colgroup>
+      <tbody>
+        <tr><td class="po-lbl">성명</td><td class="po-val" id="po_name"></td><td class="po-lbl">생년월일</td><td class="po-val" id="po_birth"></td></tr>
+        <tr><td class="po-lbl">성별</td><td id="po_gender"></td><td class="po-lbl">휴대전화</td><td class="po-val" id="po_phone"></td></tr>
+        <tr><td class="po-lbl">주소</td><td colspan="3" class="po-val" id="po_address"></td></tr>
+        <tr><td class="po-lbl">보호구분</td><td colspan="3" id="po_protection"></td></tr>
+        <tr><td class="po-lbl">가족유무</td><td id="po_family"></td><td class="po-lbl">가족교류</td><td id="po_family_exchange"></td></tr>
+        <tr><td class="po-lbl">가구원수</td><td id="po_household"></td><td class="po-lbl">경제활동</td><td id="po_employment"></td></tr>
+        <tr><td class="po-lbl">주거유형</td><td id="po_housing_type"></td><td class="po-lbl">보유형태</td><td id="po_housing_own"></td></tr>
+        <tr><td class="po-lbl">주거환경</td><td id="po_housing_cond"></td><td class="po-lbl">건강상태</td><td id="po_health"></td></tr>
+      </tbody>
+    </table>
+    <div class="po-sec-title" style="margin-top:10pt;">▣ 조사자 종합의견 (자가 체크 영역 제외)</div>
+    <table class="po-table"><tbody><tr><td style="height:60pt;vertical-align:top;padding:4pt;"></td></tr></tbody></table>
+    <div style="margin-top:6pt;font-size:8.5pt;">
+      조사자명: <span style="display:inline-block;width:80pt;border-bottom:1px solid #000;"></span>
+      &nbsp;&nbsp;(소속기관: <span style="display:inline-block;width:80pt;border-bottom:1px solid #000;"></span>
+      , 연락처: <span style="display:inline-block;width:80pt;border-bottom:1px solid #000;"></span>)
+    </div>
+    <div style="text-align:center;margin-top:10pt;font-size:8pt;color:#555;">- 2 -</div>
+  </div>
+
+  <!-- PAGE 3 — 개인정보 동의서 -->
+  <div class="po-page">
+    <div class="po-consent-title">개인정보 수집·활용 및 제3자 제공동의서</div>
+    <div class="po-consent-intro">
+      "사회적 고립 1인가구 실태조사"는 개인정보보호법 제15조에 의거하여 개인정보의 수집 및 이용에 관한 정보주체의 동의 절차를 준수하며,
+      정보주체의 동의 후 수집된 정보는 해당 조사의 개인정보 수집 및 이용목적 외의 용도로는 절대 이용·제공되지 않습니다.<br><br>
+      본인 <strong id="po_name2"></strong> 은(는) 생애맞춤형 복지서비스 제공을 위한 복지종합상담에 동의하며 보다 나은 서비스 제공을 위해서
+      본인의 욕구, 개인이력, 생활상의 어려움, 가족구성원간의 관계 및 개인정보를 필요한 범위에 따라 업무 담당자와 서비스 협력기관에 제공하고
+      상담 및 복지플랜과 관련된 서울시 정보시스템 및 보건복지부 행복e음 시스템에 기록·관리하는 것에 이해하고 이에 동의합니다.
+    </div>
+
+    <div class="po-csub-title">① 기본 개인정보 수집·이용</div>
+    <table class="po-table">
+      <tbody>
+        <tr><td class="po-td-sub" style="width:80pt;">개인정보의 수집 및 이용목적</td><td>구로구 보건·복지·고용·마을·업무관련기관 및 서비스 협력기관 정보공유</td></tr>
+        <tr><td class="po-td-sub">수집하는 기본 개인정보 항목</td><td>성명, 주민등록번호, 연락처, 주소</td></tr>
+        <tr><td class="po-td-sub">개인정보 보유 및 이용기간</td><td>이용기간: 해당 지원과 서비스가 제공되는 기간 / 보유기간: 5년 보관 후 파기</td></tr>
+      </tbody>
+    </table>
+    <div class="po-consent-agree">기본 개인정보 수집 및 이용에 동의하십니까? <span id="po_consent1_display" style="font-weight:700;margin-left:8pt;"></span></div>
+
+    <div class="po-csub-title">선택정보 및 민감정보 수집·이용</div>
+    <table class="po-table">
+      <tbody><tr><td class="po-td-sub" style="width:80pt;">수집하는 선택정보 및 민감정보 항목</td><td style="font-size:7.5pt;">보호구분, 세대유형, 비상연락망, 주거실태, 가족사항, 근로형태, 건강상황, 장애등급 및 장기요양등급, 사회적상황, 정부 및 민간단체 지원여부, 여가 및 사회활동, 주요욕구사항 등</td></tr></tbody>
+    </table>
+    <div class="po-consent-agree">선택정보·민감정보 수집 및 이용에 동의하십니까? <span id="po_consent2_display" style="font-weight:700;margin-left:8pt;"></span></div>
+
+    <div class="po-csub-title">② 개인정보 제3자 제공</div>
+    <table class="po-table">
+      <tbody>
+        <tr><td class="po-td-sub" style="width:80pt;">제공받는 곳 / 이용목적</td><td style="font-size:7.5pt;">정부 공공기관, 사회복지증진 목적으로 설립된 민간기관, 기관과 연계된 결연후원자 및 단체 — 대상자욕구에 따른 유·무료 서비스 및 프로그램, 정보제공</td></tr>
+        <tr><td class="po-td-sub">보유 및 이용기간</td><td>이용기간: 해당 지원과 서비스가 제공되는 기간 / 보유기간: 5년 보관 후 파기</td></tr>
+      </tbody>
+    </table>
+    <div class="po-consent-agree">위 개인정보 제3자 제공에 동의하십니까? <span id="po_consent3_display" style="font-weight:700;margin-left:8pt;"></span></div>
+
+    <div class="po-csub-title">서울시복지재단 개인정보 제공</div>
+    <table class="po-table">
+      <tbody>
+        <tr><td class="po-td-sub" style="width:80pt;">이용목적</td><td>고립가구 위기대응총괄시스템 운영, 대상자욕구에 따른 유·무료 서비스 및 프로그램, 정보제공</td></tr>
+        <tr><td class="po-td-sub">보유 및 이용기간</td><td>이용기간: 해당 지원과 서비스가 제공되는 기간 / 보유기간: 5년 보관 후 파기</td></tr>
+      </tbody>
+    </table>
+    <div class="po-consent-agree">위 개인정보 서울시복지재단 제공에 동의하십니까? <span id="po_consent4_display" style="font-weight:700;margin-left:8pt;"></span></div>
+
+    <div class="po-final-sign">
+      <div class="po-final-sign-title">
+        본인(대리신청인 포함)은 개인정보 수집·활용 및 제3자 제공 동의에 대하여 안내받았음을 확인합니다.<br>
+        <small>※ 만14세 미만 아동인 경우 법정대리인의 동의가 필요합니다.</small><br>
+        <small>※ 관련근거: 개인정보보호법 제15조, 제16조, 제17조, 제18조, 제19조.</small>
+      </div>
+      <div class="po-date-row">2025 년 &nbsp;&nbsp;&nbsp; 월 &nbsp;&nbsp;&nbsp; 일</div>
+      <div class="po-final-fields">
+        <div class="po-final-field">
+          <div class="po-final-line">
+            <img id="po_sig_img" src="" alt="서명" style="display:none;max-height:40pt;max-width:100pt;" />
+          </div>
+          <div class="po-final-field-label">동의자 성명: <strong id="po_name3"></strong> (서명 또는 인)</div>
+        </div>
+        <div class="po-final-field">
+          <div class="po-final-line"></div>
+          <div class="po-final-field-label">14세미만 보호자(법정대리인): (서명 또는 인)</div>
+        </div>
+        <div class="po-final-field">
+          <div class="po-final-line"></div>
+          <div class="po-final-field-label">위임 보호자(법정대리인): (서명 또는 인)</div>
+        </div>
+      </div>
+      <div class="po-agency-row">서울특별시 구로구청장 귀하</div>
+    </div>
+    <div style="text-align:center;margin-top:10pt;font-size:8pt;color:#555;">- 3 -</div>
+  </div>
+</div><!-- /#printOverlay -->
+
+<script src="print-render.js"></script>
+<script>
+// ── 인증 ──
+const ADMIN_PW = 'hwawon2025';
+function doLogin() {
+  if (document.getElementById('pwInput').value === ADMIN_PW) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminScreen').style.display = 'block';
+  } else {
+    document.getElementById('loginErr').style.display = 'block';
+    document.getElementById('pwInput').value = '';
+  }
+}
+function doLogout() {
+  document.getElementById('adminScreen').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('pwInput').value = '';
+}
+
+// ── 데이터 로드 ──
+let allRows = [];
+
+async function loadData() {
+  const url = document.getElementById('scriptUrl').value.trim();
+  if (!url) { alert('Apps Script URL을 입력해 주세요.'); return; }
+
+  document.getElementById('tableContainer').innerHTML =
+    '<div class="empty-state">불러오는 중...</div>';
+
+  try {
+    const res  = await fetch(url + '?action=getAll');
+    const data = await res.json();
+    if (!data || !data.rows) throw new Error('데이터 형식 오류');
+    allRows = data.rows;
+    renderTable(allRows);
+  } catch(e) {
+    document.getElementById('tableContainer').innerHTML =
+      '<div class="empty-state">⚠️ 데이터를 불러오지 못했습니다.<br>' +
+      '<small style="font-size:12px;">Apps Script URL과 배포 설정을 확인해 주세요.</small></div>';
+  }
+}
+
+// ── 목록 렌더링 ──
+const TYPE_COLORS = {
+  '관계지원군':    { bg:'#E3F2FD', color:'#1565C0' },
+  '일상지원군':    { bg:'#E8F5E9', color:'#2E7D32' },
+  '일상위험고립군':{ bg:'#FFF3E0', color:'#E65100' },
+  '집중관리군':    { bg:'#EDE7F6', color:'#4527A0' },
+  '긴급위기군':    { bg:'#FFEBEE', color:'#B71C1C' },
+};
+
+function renderTable(rows) {
+  if (!rows.length) {
+    document.getElementById('tableContainer').innerHTML =
+      '<div class="empty-state">해당 조건의 데이터가 없습니다.</div>';
+    document.getElementById('rowCount').textContent = '';
+    return;
+  }
+  document.getElementById('rowCount').textContent = `총 ${rows.length}건`;
+
+  let html = '<table class="data-table"><thead><tr>' +
+    '<th>제출일시</th><th>성명</th><th>생년월일</th><th>동</th><th>휴대전화</th><th>판별유형</th><th>결과지</th>' +
+    '</tr></thead><tbody>';
+
+  rows.forEach((row, i) => {
+    const type = row['판별유형'] || row.resultType || '-';
+    const tc   = TYPE_COLORS[type] || { bg:'#f5f5f5', color:'#555' };
+    const name = row['성명'] || row.name || '';
+    const birth= row['생년월일'] || row.birth || '';
+    const dong = row['동'] || row.dong || '';
+    const phone= row['휴대전화'] || row.phone || '';
+    const date = row['제출일시'] || row.submittedAt || '';
+
+    html += `<tr>
+      <td>${date}</td>
+      <td><strong>${name}</strong></td>
+      <td>${birth}</td>
+      <td>${dong}</td>
+      <td>${phone}</td>
+      <td><span class="type-badge" style="background:${tc.bg};color:${tc.color};">${type}</span></td>
+      <td><button class="btn-print-result" onclick="openResultPrint(${i})">결과지 출력</button></td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  document.getElementById('tableContainer').innerHTML = html;
+}
+
+function filterTable() {
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  const d = document.getElementById('dongFilter').value;
+  const t = document.getElementById('typeFilter').value;
+  const filtered = allRows.filter(r => {
+    const name  = (r['성명'] || r.name  || '').toLowerCase();
+    const birth = (r['생년월일'] || r.birth || '');
+    const dong  = (r['동'] || r.dong  || '');
+    const type  = (r['판별유형'] || r.resultType || '');
+    const matchQ = !q || name.includes(q) || birth.includes(q);
+    const matchD = !d || dong === d;
+    const matchT = !t || type === t;
+    return matchQ && matchD && matchT;
+  });
+  renderTable(filtered);
+}
+
+// ── 결과지 출력 ──
+function openResultPrint(i) {
+  const row = allRows[i];
+  if (!row) return;
+
+  // 시트 컬럼명 → 렌더링 함수가 쓰는 키로 매핑
+  const d = {
+    name:         row['성명']      || row.name || '',
+    birth:        row['생년월일']  || row.birth || '',
+    gender:       row['성별']      || row.gender || '',
+    dong:         row['동']        || row.dong || '',
+    address:      row['주소']      || row.address || '',
+    phone:        row['휴대전화']  || row.phone || '',
+    household:    row['가구원수']  || row.household || '',
+    protection:   row['보호구분']  || row.protection || '',
+    family:       row['가족유무']  || row.family || '',
+    familyExchange: row['가족교류여부'] || row.familyExchange || '-',
+    employment:   row['경제활동']  || row.employment || '',
+    health:       row['건강상태']  || row.health || '',
+    housingType:  row['주거유형']  || row.housingType || '',
+    housingOwn:   row['보유형태']  || row.housingOwn || '',
+    housingCond:  row['주거환경']  || row.housingCond || '',
+    // 체크리스트 문항
+    q1_1: row['1-1 같이있을사람부족'] || row.q1_1 || '',
+    q1_2: row['1-2 혼자남겨진느낌']   || row.q1_2 || '',
+    q1_3: row['1-3 사람들사이고립']   || row.q1_3 || '',
+    q1_4: row['1-4 아플때도움줄사람'] || row.q1_4 || '',
+    q1_5: row['1-5 우울할때들어줄사람']|| row.q1_5 || '',
+    lonelinessScore: row['외로움점수(합계)'] || row.lonelinessScore || '',
+    isolationScore:  row['사회적고립점수(합계)'] || row.isolationScore || '',
+    relationNeedHelp: row['관계단절_도움필요여부'] || row.relationNeedHelp || '',
+    q2_1: row['2-1 위생관리']   || row.q2_1 || '',
+    q2_2: row['2-2 식사관리']   || row.q2_2 || '',
+    q2_3: row['2-3 재정관리']   || row.q2_3 || '',
+    q2_4: row['2-4 건강관리']   || row.q2_4 || '',
+    q2_5: row['2-5 외출은둔']   || row.q2_5 || '',
+    q2_6: row['2-6 대인관계']   || row.q2_6 || '',
+    q2_7: row['2-7 생활패턴']   || row.q2_7 || '',
+    dailyNeedHelp: row['일상생활관리_도움필요여부'] || row.dailyNeedHelp || '',
+    q3_1: row['3-1 만성질병미관리'] || row.q3_1 || '',
+    q3_2: row['3-2 돌봄서비스중단'] || row.q3_2 || '',
+    q3_3: row['3-3 자살생각(긴급)'] || row.q3_3 || '',
+    q3_4: row['3-4 이별고통']       || row.q3_4 || '',
+    q3_5: row['3-5 경제적고통']     || row.q3_5 || '',
+    q3_6: row['3-6 가족돌봄부담(긴급)'] || row.q3_6 || '',
+    consent1: row['기본개인정보동의']  || row.consent1 || '',
+    consent2: row['민감정보동의']      || row.consent2 || '',
+    consent3: row['제3자제공동의']     || row.consent3 || '',
+    consent4: row['서울시복지재단동의']|| row.consent4 || '',
+    resultType: row['판별유형'] || row.resultType || '',
+    signatureImage: row['서명이미지'] || row.signatureImage || '',
+  };
+
+  // 공통 렌더링 함수 호출
+  renderPrintData(d);
+
+  // 오버레이 표시
+  document.getElementById('printOverlay').style.display = 'block';
+  document.getElementById('adminScreen').style.display  = 'none';
+  window.scrollTo(0, 0);
+}
+
+function closePrint() {
+  document.getElementById('printOverlay').style.display = 'none';
+  document.getElementById('adminScreen').style.display  = 'block';
+}
+</script>
+</body>
+</html>
