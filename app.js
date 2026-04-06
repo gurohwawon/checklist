@@ -311,19 +311,11 @@ function submitNeeds() {
   if (checked.length === 0) return showToast('필요한 서비스를 1개 이상 선택해 주세요.');
   const needsValue = checked.join(', ');
 
-  // submitForm 먼저 실행 → resultType 확정
-  submitForm();
+  // 메인 데이터 전송 (1회만) + resultType 확정
+  const { type, rel, daily, crisis } = _sendMainPayload();
 
-  // 구글 시트 욕구내용 전송 (submitForm 후 resultType 사용)
+  // 욕구내용 별도 시트 전송
   if (SHEET_ENDPOINT && SHEET_ENDPOINT !== 'YOUR_APPS_SCRIPT_ENDPOINT_HERE') {
-    const name   = document.getElementById('name').value.trim();
-    const birth  = document.getElementById('birth').value.trim();
-    const gender = document.querySelector('input[name="gender"]:checked')?.value || '';
-    const dong   = document.getElementById('addrDong')?.value || '';
-    const phone  = document.getElementById('phone').value.trim();
-    const age    = getCalcAge();
-    const resultType = window._lastResultType || '';
-
     fetch(SHEET_ENDPOINT, {
       method: 'POST',
       mode: 'no-cors',
@@ -331,12 +323,21 @@ function submitNeeds() {
       body: JSON.stringify({
         action: 'needs',
         submittedAt: new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' }),
-        name, birth, age, gender, dong, phone,
-        resultType,
-        needs: needsValue
+        name:       document.getElementById('name').value.trim(),
+        birth:      document.getElementById('birth').value.trim(),
+        age:        getCalcAge(),
+        gender:     document.querySelector('input[name="gender"]:checked')?.value || '',
+        dong:       document.getElementById('addrDong')?.value || '',
+        phone:      document.getElementById('phone').value.trim(),
+        resultType: type.name,
+        needs:      needsValue
       })
     }).catch(err => console.warn('욕구 전송 오류:', err));
   }
+
+  // 결과 화면으로 이동
+  renderResult(type, rel, daily, crisis);
+  goStep(7);
 }
 
 function submitForm() {
@@ -444,6 +445,94 @@ function submitForm() {
   // 결과 화면 렌더링 후 이동
   renderResult(type, rel, daily, crisis);
   goStep(7);
+}
+
+// submitForm에서 전송만 하고 화면 이동은 하지 않는 내부 함수
+function _sendMainPayload() {
+  const rel    = calcRelationScore();
+  const daily  = calcDailyScore();
+  const crisis = needsCrisisSection ? calcCrisisScore() : { urgentYes: 0, generalYes: 0, isUrgentCrisis: false, isGeneralCrisis: false };
+  const type   = determineType(rel, daily, crisis);
+  window._lastResultType = type.name;
+
+  const protectionChecked = [...document.querySelectorAll('input[name="protection"]:checked')].map(c => c.value);
+
+  const payload = {
+    name:         document.getElementById('name').value.trim(),
+    birth:        document.getElementById('birth').value.trim(),
+    gender:       document.querySelector('input[name="gender"]:checked')?.value || '',
+    dong:         document.getElementById('addrDong')?.value || '',
+    age:          getCalcAge(),
+    address:      document.getElementById('address').value.trim(),
+    phone:        document.getElementById('phone').value.trim(),
+    household:    document.getElementById('household').value,
+    protection:   protectionChecked.join(', '),
+    family:       document.querySelector('input[name="family"]:checked')?.value || '',
+    familyExchange: document.querySelector('input[name="familyExchange"]:checked')?.value || '-',
+    employment:   document.getElementById('employment').value,
+    health:       document.getElementById('health').value,
+    housingType:  document.getElementById('housingType').value,
+    housingOwn:   document.getElementById('housingOwn').value,
+    housingCond:  document.getElementById('housingCond').value,
+    userType:     document.querySelector('input[name="userType"]:checked')?.value || '',
+    q1_1: document.querySelector('input[name="q1_1"]:checked')?.value || '',
+    q1_2: document.querySelector('input[name="q1_2"]:checked')?.value || '',
+    q1_3: document.querySelector('input[name="q1_3"]:checked')?.value || '',
+    q1_4: document.querySelector('input[name="q1_4"]:checked')?.value || '',
+    q1_5: document.querySelector('input[name="q1_5"]:checked')?.value || '',
+    lonelinessScore: rel.loneliness,
+    isolationScore:  rel.isolation,
+    relationNeedHelp: rel.needHelp ? '도움필요' : '해당없음',
+    q2_1: document.querySelector('input[name="q2_1"]:checked')?.value || '',
+    q2_2: document.querySelector('input[name="q2_2"]:checked')?.value || '',
+    q2_3: document.querySelector('input[name="q2_3"]:checked')?.value || '',
+    q2_4: document.querySelector('input[name="q2_4"]:checked')?.value || '',
+    q2_5: document.querySelector('input[name="q2_5"]:checked')?.value || '',
+    q2_6: document.querySelector('input[name="q2_6"]:checked')?.value || '',
+    q2_7: document.querySelector('input[name="q2_7"]:checked')?.value || '',
+    dailyNoCount:   daily.noCount,
+    dailyNeedHelp:  daily.needHelp ? '도움필요' : '해당없음',
+    q3_1: needsCrisisSection ? (document.querySelector('input[name="q3_1"]:checked')?.value || '') : '-',
+    q3_2: needsCrisisSection ? (document.querySelector('input[name="q3_2"]:checked')?.value || '') : '-',
+    q3_3: needsCrisisSection ? (document.querySelector('input[name="q3_3"]:checked')?.value || '') : '-',
+    q3_4: needsCrisisSection ? (document.querySelector('input[name="q3_4"]:checked')?.value || '') : '-',
+    q3_5: needsCrisisSection ? (document.querySelector('input[name="q3_5"]:checked')?.value || '') : '-',
+    q3_6: needsCrisisSection ? (document.querySelector('input[name="q3_6"]:checked')?.value || '') : '-',
+    crisisUrgentYes:  crisis.urgentYes,
+    crisisGeneralYes: crisis.generalYes,
+    consent1: document.querySelector('input[name="consent1"]:checked')?.value || '',
+    consent2: document.querySelector('input[name="consent2"]:checked')?.value || '',
+    consent3: document.querySelector('input[name="consent3"]:checked')?.value || '',
+    consent4: document.querySelector('input[name="consent4"]:checked')?.value || '',
+    resultType: type.name,
+    resultCode: type.code,
+    submittedAt: new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' }),
+    signatureImage: (function() {
+      const canvas = document.getElementById('signatureCanvas');
+      return canvas ? canvas.toDataURL('image/png') : '';
+    })(),
+    guardianName: document.getElementById('guardianName')?.value.trim() || '',
+    guardianRelation: document.getElementById('guardianRelation')?.value || '',
+    guardianSignatureImage: (function() {
+      const canvas = document.getElementById('guardianSignatureCanvas');
+      if (!canvas) return '';
+      const ctx = canvas.getContext('2d');
+      const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+      const hasContent = Array.from(data).some((v, i) => i % 4 === 3 && v > 0);
+      return hasContent ? canvas.toDataURL('image/png') : '';
+    })()
+  };
+
+  if (SHEET_ENDPOINT && SHEET_ENDPOINT !== 'YOUR_APPS_SCRIPT_ENDPOINT_HERE') {
+    fetch(SHEET_ENDPOINT, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).catch(err => console.warn('시트 전송 오류:', err));
+  }
+
+  return { type, rel, daily, crisis };
 }
 
 // ── 결과 화면 렌더링 ──────────────────────────────────────
