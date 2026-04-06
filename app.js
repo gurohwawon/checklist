@@ -107,6 +107,8 @@ function validateStep1() {
   if (!housingType) return showToast('주거유형을 선택해 주세요.');
   if (!housingOwn)  return showToast('보유형태를 선택해 주세요.');
   if (!housingCond) return showToast('주거환경을 선택해 주세요.');
+  const userType = document.querySelector('input[name="userType"]:checked');
+  if (!userType) return showToast('이용자 구분을 선택해 주세요.');
 
   goStep(2);
 }
@@ -194,7 +196,7 @@ function validateStep5() {
   if (!cf) return showToast('안내받았음을 확인해 주세요.');
   if (!hasSigned) return showToast('서명을 해주세요.');
 
-  submitForm();
+  goStep(6);
 }
 
 // ── 이전 버튼 (동의 → 위기 or 일상) ─────────────────────
@@ -302,6 +304,40 @@ document.addEventListener('change', function(e) {
 });
 
 // ── 폼 제출 ───────────────────────────────────────────────
+
+// ── 욕구내용 제출 ──────────────────────────────────────────
+function submitNeeds() {
+  const checked = [...document.querySelectorAll('input[name="needs"]:checked')].map(c => c.value);
+  if (checked.length === 0) return showToast('필요한 서비스를 1개 이상 선택해 주세요.');
+  const needsValue = checked.join(', ');
+
+  // 구글 시트 욕구내용 전송
+  if (SHEET_ENDPOINT && SHEET_ENDPOINT !== 'YOUR_APPS_SCRIPT_ENDPOINT_HERE') {
+    const name   = document.getElementById('name').value.trim();
+    const birth  = document.getElementById('birth').value.trim();
+    const gender = document.querySelector('input[name="gender"]:checked')?.value || '';
+    const dong   = document.getElementById('addrDong')?.value || '';
+    const phone  = document.getElementById('phone').value.trim();
+    const age    = getCalcAge();
+    const resultType = document.getElementById('resultTypeBox')?.dataset?.code || window._lastResultType || '';
+
+    fetch(SHEET_ENDPOINT, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'needs',
+        submittedAt: new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' }),
+        name, birth, age, gender, dong, phone,
+        resultType,
+        needs: needsValue
+      })
+    }).catch(err => console.warn('욕구 전송 오류:', err));
+  }
+
+  submitForm();
+}
+
 function submitForm() {
   const rel    = calcRelationScore();
   const daily  = calcDailyScore();
@@ -330,6 +366,7 @@ function submitForm() {
     housingType:  document.getElementById('housingType').value,
     housingOwn:   document.getElementById('housingOwn').value,
     housingCond:  document.getElementById('housingCond').value,
+    userType:     document.querySelector('input[name="userType"]:checked')?.value || '',
 
     // 관계 단절 점수
     q1_1: document.querySelector('input[name="q1_1"]:checked')?.value || '',
@@ -405,12 +442,13 @@ function submitForm() {
 
   // 결과 화면 렌더링 후 이동
   renderResult(type, rel, daily, crisis);
-  goStep(6);
+  goStep(7);
 }
 
 // ── 결과 화면 렌더링 ──────────────────────────────────────
 function renderResult(type, rel, daily, crisis) {
   // 유형 박스
+  window._lastResultType = type.name;
   const typeBox = document.getElementById('resultTypeBox');
   typeBox.style.background  = type.bg;
   typeBox.style.border      = `1.5px solid ${type.color}40`;
@@ -589,6 +627,7 @@ function openPrintPage() {
     housingType:  document.getElementById('housingType').value,
     housingOwn:   document.getElementById('housingOwn').value,
     housingCond:  document.getElementById('housingCond').value,
+    userType:     document.querySelector('input[name="userType"]:checked')?.value || '',
     serviceWill:  document.querySelector('input[name="serviceWill"]:checked')?.value || '',
     q1_1: document.querySelector('input[name="q1_1"]:checked')?.value || '',
     q1_2: document.querySelector('input[name="q1_2"]:checked')?.value || '',
