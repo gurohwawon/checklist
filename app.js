@@ -341,101 +341,12 @@ function submitNeeds() {
 }
 
 function submitForm() {
-  const rel    = calcRelationScore();
-  const daily  = calcDailyScore();
-  const crisis = needsCrisisSection ? calcCrisisScore() : { urgentYes: 0, generalYes: 0, isUrgentCrisis: false, isGeneralCrisis: false };
-  const type   = determineType(rel, daily, crisis);
-
-  // 보호구분 체크박스 값 수집
-  const protectionChecked = [...document.querySelectorAll('input[name="protection"]:checked')].map(c => c.value);
-
-  // 데이터 패키지
-  const payload = {
-    // 기본 현황
-    name:         document.getElementById('name').value.trim(),
-    birth:        document.getElementById('birth').value.trim(),
-    gender:       document.querySelector('input[name="gender"]:checked')?.value || '',
-    dong:         document.getElementById('addrDong')?.value || '',
-    age:          getCalcAge(),
-    address:      document.getElementById('address').value.trim(),
-    phone:        document.getElementById('phone').value.trim(),
-    household:    document.getElementById('household').value,
-    protection:   protectionChecked.join(', '),
-    family:       document.querySelector('input[name="family"]:checked')?.value || '',
-    familyExchange: document.querySelector('input[name="familyExchange"]:checked')?.value || '-',
-    employment:   document.getElementById('employment').value,
-    health:       document.getElementById('health').value,
-    housingType:  document.getElementById('housingType').value,
-    housingOwn:   document.getElementById('housingOwn').value,
-    housingCond:  document.getElementById('housingCond').value,
-    userType:     document.querySelector('input[name="userType"]:checked')?.value || '',
-
-    // 관계 단절 점수
-    q1_1: document.querySelector('input[name="q1_1"]:checked')?.value || '',
-    q1_2: document.querySelector('input[name="q1_2"]:checked')?.value || '',
-    q1_3: document.querySelector('input[name="q1_3"]:checked')?.value || '',
-    q1_4: document.querySelector('input[name="q1_4"]:checked')?.value || '',
-    q1_5: document.querySelector('input[name="q1_5"]:checked')?.value || '',
-    lonelinessScore: rel.loneliness,
-    isolationScore:  rel.isolation,
-    relationNeedHelp: rel.needHelp ? '도움필요' : '해당없음',
-
-    // 일상생활 점수
-    q2_1: document.querySelector('input[name="q2_1"]:checked')?.value || '',
-    q2_2: document.querySelector('input[name="q2_2"]:checked')?.value || '',
-    q2_3: document.querySelector('input[name="q2_3"]:checked')?.value || '',
-    q2_4: document.querySelector('input[name="q2_4"]:checked')?.value || '',
-    q2_5: document.querySelector('input[name="q2_5"]:checked')?.value || '',
-    q2_6: document.querySelector('input[name="q2_6"]:checked')?.value || '',
-    q2_7: document.querySelector('input[name="q2_7"]:checked')?.value || '',
-    dailyNoCount:   daily.noCount,
-    dailyNeedHelp:  daily.needHelp ? '도움필요' : '해당없음',
-
-    // 위기 상황 (해당 시)
-    q3_1: needsCrisisSection ? (document.querySelector('input[name="q3_1"]:checked')?.value || '') : '-',
-    q3_2: needsCrisisSection ? (document.querySelector('input[name="q3_2"]:checked')?.value || '') : '-',
-    q3_3: needsCrisisSection ? (document.querySelector('input[name="q3_3"]:checked')?.value || '') : '-',
-    q3_4: needsCrisisSection ? (document.querySelector('input[name="q3_4"]:checked')?.value || '') : '-',
-    q3_5: needsCrisisSection ? (document.querySelector('input[name="q3_5"]:checked')?.value || '') : '-',
-    q3_6: needsCrisisSection ? (document.querySelector('input[name="q3_6"]:checked')?.value || '') : '-',
-    crisisUrgentYes:  crisis.urgentYes,
-    crisisGeneralYes: crisis.generalYes,
-
-    // 개인정보 동의
-    consent1: document.querySelector('input[name="consent1"]:checked')?.value || '',
-    consent2: document.querySelector('input[name="consent2"]:checked')?.value || '',
-    consent3: document.querySelector('input[name="consent3"]:checked')?.value || '',
-    consent4: document.querySelector('input[name="consent4"]:checked')?.value || '',
-
-    // 판별 결과
-    resultType: type.name,
-    resultCode: type.code,
-    submittedAt: new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' }),
-
-    // 자필 서명 (base64 이미지)
-    signatureImage: (function() {
-      const canvas = document.getElementById('signatureCanvas');
-      return canvas ? canvas.toDataURL('image/png') : '';
-    })(),
-
-    // 보호자(만 14세 미만)
-    guardianName: document.getElementById('guardianName')?.value.trim() || '',
-    guardianRelation: document.getElementById('guardianRelation')?.value || '',
-    guardianSignatureImage: (function() {
-      const canvas = document.getElementById('guardianSignatureCanvas');
-      if (!canvas) return '';
-      // 보호자 서명이 있을 때만
-      const ctx = canvas.getContext('2d');
-      const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-      const hasContent = Array.from(data).some((v, i) => i % 4 === 3 && v > 0);
-      return hasContent ? canvas.toDataURL('image/png') : '';
-    })()
-  };
-
-  // 결과 화면 렌더링 후 이동 (전송은 _sendMainPayload에서 담당)
+  // _sendMainPayload가 전송 + 계산 담당
+  const { type, rel, daily, crisis } = _sendMainPayload();
   renderResult(type, rel, daily, crisis);
   goStep(7);
 }
+
 
 // submitForm에서 전송만 하고 화면 이동은 하지 않는 내부 함수
 function _sendMainPayload() {
