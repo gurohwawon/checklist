@@ -8,7 +8,7 @@ let currentStep = 0;
 let needsCrisisSection = false; // 위기상황 섹션 진입 여부
 
 // Google Apps Script 웹앱 엔드포인트 (배포 후 교체)
-const SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz5X38sqo4OkQRC3yWKMoa5G2VkYXnfiQjeSJPhRQOKjZdMmRUAjG2gldSzTiu3Q1zM/exec';
+const SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbx9K0rAAIKk7ybnezfmYe3Zjr-cdz9Dw5I8s5FsJhFNoTZ_smJDcy--DwYXb2rWWuwK/exec';
 
 const TOTAL_STEPS = 6; // 0~6
 
@@ -432,17 +432,7 @@ function submitForm() {
     })()
   };
 
-  // 구글 시트로 전송 (엔드포인트 설정된 경우)
-  if (SHEET_ENDPOINT && SHEET_ENDPOINT !== 'YOUR_APPS_SCRIPT_ENDPOINT_HERE') {
-    fetch(SHEET_ENDPOINT, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    }).catch(err => console.warn('시트 전송 오류:', err));
-  }
-
-  // 결과 화면 렌더링 후 이동
+  // 결과 화면 렌더링 후 이동 (전송은 _sendMainPayload에서 담당)
   renderResult(type, rel, daily, crisis);
   goStep(7);
 }
