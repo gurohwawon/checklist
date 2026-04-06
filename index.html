@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>서울시 외로움 및 고립위험 체크리스트</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+/* ==========================================
+   서울시 외로움·고립위험 체크리스트 스타일
+   서울시 공식 블루 기반 디자인
+   ========================================== */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --blue-700: #003A8C;
+  --blue-600: #0052A4;
+  --blue-500: #1A6FBF;
+  --blue-100: #E8F0F9;
+  --blue-50:  #F2F7FD;
+  --red-600:  #C0392B;
+  --red-100:  #FDECEA;
+  --orange-500: #E67E22;
+  --orange-100: #FEF3E2;
+  --green-600: #1E7E34;
+  --green-100: #E8F5E9;
+  --gray-900: #1A1A1A;
+  --gray-700: #3D3D3D;
+  --gray-500: #6B6B6B;
+  --gray-300: #C8C8C8;
+  --gray-100: #F4F4F4;
+  --white: #FFFFFF;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+  --font: 'Noto Sans KR', sans-serif;
+}
+
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  background: var(--blue-50);
+  color: var(--gray-900);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* ── 헤더 ── */
+.site-header {
+  background: var(--white);
+  border-bottom: 1px solid #E0E8F3;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-sm);
+}
+.header-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+.logo-icon { width: 36px; height: 36px; flex-shrink: 0; }
+.header-text { display: flex; flex-direction: column; gap: 1px; }
+.header-org { font-size: 11px; color: var(--blue-600); font-weight: 600; letter-spacing: 0.05em; }
+.header-title { font-size: 14px; font-weight: 700; color: var(--gray-900); }
+
+/* 진행바 */
+.progress-bar-wrap {
+  height: 4px;
+  background: var(--gray-100);
+}
+.progress-bar {
+  height: 100%;
+  background: var(--blue-600);
+  transition: width 0.4s ease;
+  width: 0%;
+}
+
+/* ── 메인 ── */
+.main-content {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+
+/* 스텝 전환 */
+.step { display: none; }
+.step.active { display: block; animation: fadeUp 0.3s ease; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── 카드 ── */
+.card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 28px 24px;
+}
+@media (max-width: 480px) { .card { padding: 20px 16px; } }
+
+/* ── 인트로 카드 ── */
+.intro-card { text-align: center; padding: 40px 28px; }
+.intro-badge {
+  display: inline-block;
+  background: var(--blue-100);
+  color: var(--blue-600);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+  letter-spacing: 0.04em;
+}
+.intro-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--gray-900);
+  line-height: 1.35;
+  margin-bottom: 16px;
+}
+.intro-desc {
+  font-size: 14px;
+  color: var(--gray-500);
+  line-height: 1.75;
+  margin-bottom: 28px;
+  text-align: left;
+}
+.intro-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 32px;
+  text-align: left;
+}
+.intro-info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--gray-700);
+  background: var(--blue-50);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+}
+.info-icon { font-size: 16px; flex-shrink: 0; }
+
+/* ── 스텝 헤더 ── */
+.step-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--blue-600);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.step-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+.step-desc {
+  font-size: 13px;
+  color: var(--gray-500);
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+/* ── 폼 공통 ── */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+@media (max-width: 480px) { .form-grid { grid-template-columns: 1fr; } }
+.form-full { grid-column: 1 / -1; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gray-700);
+}
+.form-label.required::after {
+  content: ' *';
+  color: var(--red-600);
+}
+.form-input, .form-select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid var(--gray-300);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: var(--font);
+  color: var(--gray-900);
+  background: var(--white);
+  transition: border-color 0.2s;
+  outline: none;
+}
+.form-input:focus, .form-select:focus { border-color: var(--blue-600); }
+.form-input.error, .form-select.error { border-color: var(--red-600); }
+
+/* ── 라디오 / 체크박스 ── */
+.radio-group, .checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.flex-wrap { flex-wrap: wrap; }
+.radio-label, .checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 8px 14px;
+  border: 1.5px solid var(--gray-300);
+  border-radius: var(--radius-sm);
+  transition: all 0.15s;
+  background: var(--white);
+}
+.radio-label:hover, .checkbox-label:hover { border-color: var(--blue-500); background: var(--blue-50); }
+.radio-label input, .checkbox-label input { accent-color: var(--blue-600); }
+
+/* ── 섹션 소제목 ── */
+.section-sub-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--blue-700);
+  border-left: 3px solid var(--blue-600);
+  padding-left: 10px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.sub-note {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--gray-500);
+}
+.mt-md { margin-top: 24px; }
+
+/* ── 문항 ── */
+.question-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+.question-item {
+  border: 1.5px solid var(--gray-100);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  background: var(--gray-100);
+  transition: border-color 0.2s;
+}
+.question-item.answered { border-color: var(--blue-100); background: var(--blue-50); }
+.question-item.urgent { border-color: #FCBFBC; background: var(--red-100); }
+.question-item.urgent.answered { border-color: var(--red-600); }
+.q-text {
+  font-size: 14px;
+  color: var(--gray-900);
+  font-weight: 500;
+  margin-bottom: 12px;
+  line-height: 1.55;
+}
+.q-num {
+  display: inline-block;
+  background: var(--blue-600);
+  color: var(--white);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+.q-tag {
+  display: inline-block;
+  background: var(--blue-100);
+  color: var(--blue-700);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 4px;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+.q-sub {
+  display: block;
+  font-size: 12px;
+  color: var(--gray-500);
+  margin-top: 4px;
+}
+.urgent-mark {
+  display: inline-block;
+  background: var(--red-600);
+  color: var(--white);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+/* 점수형 선택 */
+.scale-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+@media (min-width: 480px) { .scale-group { flex-direction: row; flex-wrap: wrap; gap: 8px; } }
+.scale-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 8px 14px;
+  border: 1.5px solid var(--gray-300);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  background: var(--white);
+  transition: all 0.15s;
+  flex: 1;
+  min-width: 130px;
+}
+.scale-label:hover { border-color: var(--blue-500); background: var(--white); }
+.scale-label input:checked + span { color: var(--blue-700); font-weight: 600; }
+.scale-label:has(input:checked) { border-color: var(--blue-600); background: var(--blue-50); }
+.scale-label input { accent-color: var(--blue-600); flex-shrink: 0; }
+
+/* 그렇다/아니다 */
+.yn-group { display: flex; gap: 8px; }
+.yn-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 10px 20px;
+  border: 1.5px solid var(--gray-300);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  background: var(--white);
+  transition: all 0.15s;
+  flex: 1;
+  justify-content: center;
+}
+.yn-label.yes:has(input:checked) { border-color: var(--blue-600); background: var(--blue-100); color: var(--blue-700); }
+.yn-label.no:has(input:checked)  { border-color: var(--orange-500); background: var(--orange-100); color: #7D4E1A; }
+.yn-label input { accent-color: var(--blue-600); }
+
+/* ── 안내 박스 ── */
+.notice-box {
+  background: var(--blue-50);
+  border: 1.5px solid var(--blue-100);
+  border-left: 4px solid var(--blue-600);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--blue-700);
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+/* ── 개인정보 동의 ── */
+.consent-block {
+  border: 1.5px solid var(--gray-100);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 12px;
+  background: var(--gray-100);
+}
+.consent-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--blue-700);
+  margin-bottom: 8px;
+}
+.consent-detail {
+  font-size: 12px;
+  color: var(--gray-700);
+  line-height: 1.75;
+  margin-bottom: 12px;
+}
+.consent-note { color: var(--gray-500); }
+.consent-check-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.consent-check-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 16px;
+  border: 1.5px solid var(--gray-300);
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  transition: all 0.15s;
+}
+.consent-check-label:has(input:checked) { border-color: var(--blue-600); background: var(--blue-50); color: var(--blue-700); }
+.consent-check-label input { accent-color: var(--blue-600); }
+
+.consent-final {
+  background: var(--blue-50);
+  border: 1.5px solid var(--blue-100);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-top: 16px;
+  margin-bottom: 24px;
+}
+.consent-final-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--gray-700);
+  line-height: 1.65;
+}
+.consent-final-label input { accent-color: var(--blue-600); margin-top: 3px; flex-shrink: 0; }
+.consent-final-label small { font-size: 11px; color: var(--gray-500); display: block; margin-top: 4px; }
+
+/* ── 버튼 ── */
+.btn-row {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+.btn-primary, .btn-secondary {
+  padding: 12px 28px;
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-weight: 700;
+  font-family: var(--font);
+  cursor: pointer;
+  border: none;
+  transition: all 0.18s;
+}
+.btn-primary {
+  background: var(--blue-600);
+  color: var(--white);
+}
+.btn-primary:hover { background: var(--blue-700); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+.btn-primary:active { transform: translateY(0); }
+.btn-secondary {
+  background: var(--white);
+  color: var(--gray-700);
+  border: 1.5px solid var(--gray-300);
+}
+.btn-secondary:hover { border-color: var(--blue-500); color: var(--blue-600); }
+.btn-full { width: 100%; }
+
+/* ── 결과 카드 ── */
+.result-card { text-align: center; padding: 40px 24px 32px; }
+.result-check {
+  width: 64px;
+  height: 64px;
+  background: var(--green-600);
+  color: var(--white);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 auto 16px;
+}
+.result-title { font-size: 22px; font-weight: 700; color: var(--gray-900); margin-bottom: 8px; }
+.result-sub { font-size: 14px; color: var(--gray-500); margin-bottom: 28px; line-height: 1.6; }
+
+.result-type-box {
+  border-radius: var(--radius-md);
+  padding: 20px;
+  margin-bottom: 16px;
+  text-align: left;
+}
+.result-type-title { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; margin-bottom: 6px; }
+.result-type-name { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+.result-type-desc { font-size: 13px; line-height: 1.65; }
+
+.result-scores {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.score-chip {
+  flex: 1;
+  min-width: 100px;
+  background: var(--gray-100);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  text-align: center;
+}
+.score-chip-label { font-size: 11px; color: var(--gray-500); margin-bottom: 4px; }
+.score-chip-value { font-size: 20px; font-weight: 700; color: var(--blue-700); }
+.score-chip-sub { font-size: 11px; color: var(--gray-500); }
+
+.result-service {
+  background: var(--blue-50);
+  border: 1.5px solid var(--blue-100);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  text-align: left;
+  margin-bottom: 16px;
+}
+.result-service-title { font-size: 12px; font-weight: 700; color: var(--blue-700); margin-bottom: 8px; letter-spacing: 0.04em; }
+.result-service-list { font-size: 13px; color: var(--gray-700); line-height: 1.8; }
+
+.result-crisis-notice {
+  background: var(--red-100);
+  border: 1.5px solid #F5C6C4;
+  border-radius: var(--radius-md);
+  padding: 16px;
+  font-size: 13px;
+  color: #7B1D1A;
+  line-height: 1.7;
+  text-align: left;
+  margin-top: 12px;
+}
+
+/* ── 에러 메시지 ── */
+.error-msg {
+  color: var(--red-600);
+  font-size: 12px;
+  margin-top: 4px;
+}
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--gray-900);
+  color: var(--white);
+  font-size: 13px;
+  padding: 12px 20px;
+  border-radius: var(--radius-sm);
+  z-index: 9999;
+  opacity: 0;
+  transition: all 0.3s;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── 푸터 ── */
+.site-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+  padding: 24px 16px;
+  font-size: 12px;
+  color: var(--gray-500);
+  border-top: 1px solid var(--gray-100);
+}
+.footer-logo {
+  height: 52px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* ── 자필 서명 패드 ── */
+.signature-block {
+  margin-top: 20px;
+  margin-bottom: 8px;
+}
+.signature-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gray-700);
+  margin-bottom: 6px;
+}
+.required-mark { color: var(--red-600); }
+.signature-hint {
+  font-size: 12px;
+  color: var(--gray-500);
+  margin-bottom: 8px;
+}
+.signature-wrap {
+  border: 2px solid var(--gray-300);
+  border-radius: var(--radius-md);
+  background: var(--white);
+  cursor: crosshair;
+  overflow: hidden;
+  touch-action: none;
+}
+.signature-wrap.active { border-color: var(--blue-600); }
+.signature-wrap.has-sig { border-color: var(--blue-500); background: var(--blue-50); }
+#signatureCanvas {
+  display: block;
+  width: 100%;
+  height: 160px;
+}
+.signature-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+.btn-clear-sig {
+  background: none;
+  border: 1.5px solid var(--gray-300);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gray-500);
+  padding: 6px 14px;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: all 0.15s;
+}
+.btn-clear-sig:hover { border-color: var(--red-600); color: var(--red-600); }
+.sig-status {
+  font-size: 12px;
+  color: var(--blue-600);
+  font-weight: 600;
+}
+
+/* ── 시작 페이지 안내 박스 ── */
+.intro-notice-box {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: #E8F1FB;
+  border: 1.5px solid #0052A4;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin: 16px 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #1a2a4a;
+  text-align: left;
+}
+.intro-notice-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+.intro-contact {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #e0e6f0;
+  text-align: center;
+}
+.intro-contact-label {
+  font-size: 11px;
+  color: #888;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.intro-contact-info {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #1a2a4a;
+}
+.intro-contact-info a {
+  color: #0052A4;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+/* ── 기간 안내 텍스트 강조 ── */
+.step-period-notice {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0052A4;
+  background: #EEF4FF;
+  border-left: 4px solid #0052A4;
+  padding: 10px 14px;
+  border-radius: 0 8px 8px 0;
+  margin: 0 0 16px;
+  line-height: 1.5;
+}
+
+/* ── 동의서 테이블 ── */
+.consent-intro-text {
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: #333;
+  background: #f8f9fb;
+  border: 1px solid #d0dae8;
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+.consent-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  margin-bottom: 6px;
+}
+.consent-table th,
+.consent-table td {
+  border: 1px solid #c5cfe0;
+  padding: 8px 10px;
+  vertical-align: top;
+  line-height: 1.6;
+}
+.consent-table th {
+  background: #d9e6f7;
+  font-weight: 700;
+  text-align: center;
+}
+.ct-label {
+  background: #f0f4fa;
+  font-weight: 600;
+  width: 35%;
+  color: #2a3a5c;
+}
+.consent-note-row {
+  font-size: 11.5px;
+  color: #666;
+  padding: 5px 2px;
+  line-height: 1.5;
+}
+.consent-q-row {
+  font-size: 13px;
+  padding: 8px 0 4px;
+  color: #1a2a4a;
+}
+
+/* ── 결과 전송 완료 박스 ── */
+.result-sent-box {
+  background: #E8F5E9;
+  border: 1.5px solid #4CAF50;
+  border-radius: 12px;
+  padding: 20px 16px;
+  text-align: center;
+  margin: 16px 0;
+}
+.result-sent-icon { font-size: 36px; margin-bottom: 10px; }
+.result-sent-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1B5E20;
+  line-height: 1.7;
+  margin-bottom: 6px;
+}
+.result-sent-sub {
+  font-size: 13px;
+  color: #388E3C;
+}
+.result-contact-box {
+  margin-top: 24px;
+  padding: 16px;
+  background: #f8f9fb;
+  border-radius: 10px;
+  text-align: center;
+  border: 1px solid #dce3ee;
+}
+.result-contact-title {
+  font-size: 11px;
+  color: #888;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+.result-contact-info {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #1a2a4a;
+}
+.result-tel {
+  display: inline-block;
+  font-size: 20px;
+  font-weight: 700;
+  color: #0052A4;
+  text-decoration: none;
+  margin-top: 4px;
+}
+
+/* ── 주소 고정 접두사 행 ── */
+.addr-fixed-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f0f4fa;
+  border: 1.5px solid #c5cfe0;
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+.addr-fixed-prefix {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0052A4;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.addr-dong-select {
+  border: 1.5px solid #c5cfe0 !important;
+  border-radius: 8px !important;
+  flex: 1;
+  min-width: 0;
+}
+.addr-preview {
+  font-size: 12.5px;
+  color: #0052A4;
+  background: #EEF4FF;
+  border-radius: 6px;
+  padding: 7px 12px;
+  margin-top: 6px;
+  word-break: break-all;
+}
+
+/* ── 전화번호 입력 왼쪽 정렬 ── */
+input[type="tel"].form-input {
+  text-align: left;
+}
+
+/* ── 동의서 제목 한줄 ── */
+.consent-title-oneline {
+  font-size: clamp(15px, 4vw, 20px);
+  white-space: nowrap;
+  letter-spacing: -0.02em;
+}
+
+/* ── 결과 따뜻한 마무리 박스 ── */
+.result-warm-box {
+  background: linear-gradient(135deg, #EEF4FF 0%, #E8F5E9 100%);
+  border: 1.5px solid #0052A4;
+  border-radius: 14px;
+  padding: 22px 18px;
+  text-align: center;
+  margin: 16px 0;
+}
+.result-warm-icon { font-size: 32px; margin-bottom: 10px; }
+.result-warm-text {
+  font-size: 15px;
+  color: #1a2a4a;
+  line-height: 1.7;
+  margin-bottom: 10px;
+}
+.result-warm-sub {
+  font-size: 13px;
+  color: #4a6080;
+  line-height: 1.7;
+}
+
+/* ── 동의서 날짜 표시 ── */
+.consent-date-row {
+  text-align: right;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a2a4a;
+  padding: 10px 0 6px;
+  border-top: 1px solid #e0e6f0;
+  margin-top: 12px;
+}
+
+/* ── 만 14세 미만 보호자 안내 ── */
+.guardian-notice {
+  background: #FFF3E0;
+  border: 1.5px solid #FF8F00;
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #E65100;
+  margin-top: 16px;
+}
+
+/* ── 위기상황(step-4) 문항 compact 스타일 ── */
+#step-4 .question-item {
+  padding: 10px 14px;
+  margin-bottom: 8px;
+}
+#step-4 .question-text {
+  font-size: 13px;
+  line-height: 1.45;
+  margin-bottom: 8px;
+}
+#step-4 .yn-options {
+  gap: 8px;
+}
+#step-4 .yn-label {
+  padding: 8px 14px;
+  font-size: 13px;
+}
+
+
+/* 인쇄 */
+
+  /* ── 인쇄 오버레이 기본 ── */
+  #printOverlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: #eee; overflow-y: auto; z-index: 9999;
+  }
+  .po-screen-only {
+    display: flex; gap: 12px; justify-content: center; align-items: center;
+    padding: 16px; background: #f0f4fa; border-bottom: 2px solid #0052A4;
+    position: sticky; top: 0; z-index: 10;
+  }
+  .po-btn-print {
+    background: #0052A4; color: #fff; border: none;
+    padding: 10px 28px; font-size: 15px; font-weight: 700;
+    border-radius: 6px; cursor: pointer; font-family: inherit;
+  }
+  .po-btn-print:hover { background: #003A8C; }
+  .po-btn-back {
+    background: #fff; color: #0052A4; border: 2px solid #0052A4;
+    padding: 10px 20px; font-size: 14px; font-weight: 600;
+    border-radius: 6px; cursor: pointer; font-family: inherit;
+  }
+  /* ── A4 페이지 ── */
+  .po-page {
+    width: 210mm; min-height: 297mm;
+    margin: 16px auto; padding: 15mm 18mm;
+    background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+    page-break-after: always;
+    font-family: 'Malgun Gothic','맑은 고딕','Noto Sans KR',sans-serif;
+    font-size: 10.5pt; color: #000;
+  }
+  .po-page:last-child { page-break-after: auto; }
+  .po-side-label { text-align:right; font-size:8pt; color:#555; margin-bottom:4pt; }
+  .po-page-header { text-align:center; margin-bottom:8pt; border-bottom:2px solid #000; padding-bottom:5pt; }
+  .po-main-title { font-size:14.5pt; font-weight:700; margin-bottom:2pt; }
+  .po-sub-title { font-size:10.5pt; color:#333; }
+  /* 표 */
+  .po-table { width:100%; border-collapse:collapse; margin-bottom:6pt; font-size:10pt; }
+  .po-table th, .po-table td { border:1px solid #000; padding:3pt 4pt; vertical-align:middle; }
+  .po-table th { background:#d9e1f2; font-weight:700; text-align:center; }
+  .po-num { width:22pt; text-align:center; font-weight:700; background:#EEF2FA; white-space:nowrap; }
+  .po-center { text-align:center; }
+  .po-lbl { background:#f2f2f2; font-weight:600; white-space:nowrap; text-align:center; width:60pt; }
+  .po-val { font-weight:600; }
+  .po-td-sub { background:#fafafa; font-weight:600; font-size:8pt; }
+  /* 영역 타이틀 */
+  .po-sec-title { font-size:11pt; font-weight:700; background:#1F3864; color:#fff; padding:3pt 6pt; margin:6pt 0 0; }
+  .po-sec-note { font-size:9pt; color:#555; margin:2pt 0 3pt; }
+  .po-eval-row td { background:#FFF2CC; font-size:9.5pt; font-weight:600; }
+  /* 동의서 */
+  .po-consent-title { background:#1F3864; color:#fff; font-size:11pt; font-weight:700; text-align:center; padding:5pt; margin-bottom:5pt; }
+  .po-consent-intro { font-size:7.5pt; line-height:1.6; margin-bottom:6pt; border:1px solid #aaa; padding:4pt 6pt; background:#fafafa; }
+  .po-csub-title { font-size:8.5pt; font-weight:700; background:#D9E1F2; padding:2pt 5pt; margin:4pt 0 2pt; }
+  .po-consent-agree { display:flex; gap:16pt; padding:3pt 0; font-size:8.5pt; }
+  /* 최종 서명 */
+  .po-final-sign { border:1px solid #000; padding:6pt 8pt; margin-top:8pt; text-align:center; }
+  .po-final-sign-title { font-size:8pt; margin-bottom:6pt; }
+  .po-date-row { text-align:right; font-size:9pt; margin:8pt 0 4pt; }
+  .po-agency-row { text-align:right; font-size:9pt; font-weight:700; }
+  .po-final-fields { display:flex; justify-content:space-around; gap:12pt; }
+  .po-final-field { flex:1; text-align:center; }
+  .po-final-line { border-bottom:1px solid #000; height:40pt; margin-bottom:2pt; display:flex; align-items:center; justify-content:center; }
+  .po-final-field-label { font-size:8pt; color:#555; }
+  /* ── 인쇄 전용 CSS ── */
+  @media print {
+    body > * { display: none !important; }
+    #printOverlay { display: block !important; position: static !important; overflow: visible !important; background: #fff !important; }
+    .po-screen-only { display: none !important; }
+    .po-page { margin: 0 !important; box-shadow: none !important; padding: 12mm 16mm !important; }
+    @page { size: A4; margin: 0; }
+  }
+  
+/* ── 첫 페이지 서울시 로고 ── */
+.intro-seoul-logo {
+  margin-bottom: 6px;
+}
+.intro-seoul-logo img {
+  height: 90px;
+  width: auto;
+  object-fit: contain;
+}
+/* ── intro-desc 가운데 정렬 ── */
+.intro-desc-center {
+  text-align: center !important;
+}
+/* ── 첫 페이지 타이틀 한줄 ── */
+.intro-title-oneline {
+  font-size: clamp(16px, 4.5vw, 22px);
+  white-space: nowrap;
+  letter-spacing: -0.02em;
+}
+/* ── 동의서 제목 한줄 ── */
+.consent-title-oneline {
+  font-size: clamp(15px, 4vw, 20px);
+  white-space: nowrap;
+  letter-spacing: -0.02em;
+}
+</style>
+</head>
+<body>
+  <div id="app">
+    <!-- 상단 헤더 -->
+    <header class="site-header">
+      <div class="header-inner">
+        <svg class="logo-icon" width="36" height="36" viewBox="0 0 40 40" fill="none" aria-label="서울시 로고">
+          <circle cx="20" cy="20" r="18" stroke="#0052A4" stroke-width="2.5"/>
+          <path d="M11 20 Q15 13 20 20 Q25 27 29 20" stroke="#0052A4" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <circle cx="20" cy="20" r="3" fill="#0052A4"/>
+        </svg>
+        <div class="header-text">
+          <span class="header-org">서울특별시</span>
+          <span class="header-title">외로움 및 고립위험 체크리스트</span>
+        </div>
+      </div>
+      <!-- 진행바 -->
+      <div class="progress-bar-wrap">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <!-- ───────────── STEP 0: 시작 화면 ───────────── -->
+      <section class="step active" id="step-0">
+        <div class="card intro-card">
+          <!-- 서울시 로고 -->
+          <div class="intro-seoul-logo">
+            <img src="logo-seoul.jpg" alt="서울특별시" />
+          </div>
+          <h1 class="intro-title intro-title-oneline">서울시 외로움 및 고립위험 체크리스트</h1>
+          <p class="intro-desc intro-desc-center">
+            관계망 단절과 일상생활 관리의 어려움이 있는 분의 상황을 파악하고<br>
+            적합한 서비스를 연결해 드리기 위한 조사입니다.<br><br>
+            솔직하게 응답해 주실수록 더 잘 도와드릴 수 있습니다.
+          </p>
+          <div class="intro-notice-box">
+            <div class="intro-notice-icon">📨</div>
+            <div>
+              <strong>응답 데이터 자동 전송 안내</strong><br>
+              설문을 완료하시면 입력하신 정보가 <strong>화원종합사회복지관</strong>으로 안전하게 전송됩니다. 담당자가 검토 후 연락드릴 예정입니다.
+            </div>
+          </div>
+          <div class="intro-info-list">
+            <div class="intro-info-item">
+              <span class="info-icon">📋</span>
+              <span>총 18문항 (상황에 따라 12문항)</span>
+            </div>
+            <div class="intro-info-item">
+              <span class="info-icon">⏱️</span>
+              <span>약 5~10분 소요</span>
+            </div>
+            <div class="intro-info-item">
+              <span class="info-icon">🔒</span>
+              <span>입력하신 정보는 복지서비스 연계 목적으로만 활용됩니다</span>
+            </div>
+          </div>
+          <button class="btn-primary btn-full" onclick="goStep(1)">시작하기</button>
+          <div class="intro-contact">
+            <div class="intro-contact-label">사업 문의</div>
+            <div class="intro-contact-info">
+              <strong>화원종합사회복지관</strong><br>
+              서울특별시 구로구 벚꽃로484<br>
+              문의 <a href="tel:02-837-0761">02-837-0761</a> · <a href="https://www.hwawon.org/" target="_blank">www.hwawon.org</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ───────────── STEP 1: 기본 현황 ───────────── -->
+      <section class="step" id="step-1">
+        <div class="card">
+          <div class="step-label">기본 현황</div>
+          <h2 class="step-title">조사대상자 기본 현황</h2>
+          <p class="step-desc">아래 항목을 빠짐없이 작성해 주세요.</p>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label required">성명</label>
+              <input type="text" id="name" class="form-input" placeholder="이름을 입력해 주세요" />
+            </div>
+            <div class="form-group">
+              <label class="form-label required">생년월일</label>
+              <input type="text" id="birth" class="form-input" placeholder="예: 1975.03.15" maxlength="10" oninput="formatBirth(this); calcAge();" autocomplete="off" />
+              <div id="ageDisplay" style="display:none;margin-top:5px;font-size:13px;font-weight:700;color:#0052A4;padding:5px 10px;background:#EEF4FF;border-radius:6px;display:inline-block;"></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label required">성별</label>
+              <div class="radio-group">
+                <label class="radio-label"><input type="radio" name="gender" value="남" /> 남</label>
+                <label class="radio-label"><input type="radio" name="gender" value="여" /> 여</label>
+              </div>
+            </div>
+            <div class="form-group form-full">
+              <label class="form-label required">주소</label>
+              <div class="addr-fixed-row">
+                <span class="addr-fixed-prefix">서울특별시 구로구</span>
+                <select id="addrDong" class="form-select addr-dong-select" onchange="updateAddressField()">
+                  <option value="">동 선택</option>
+                  <option>가리봉동</option>
+                  <option>개봉1동</option><option>개봉2동</option><option>개봉3동</option>
+                  <option>고척1동</option><option>고척2동</option>
+                  <option>구로1동</option><option>구로2동</option><option>구로3동</option><option>구로4동</option><option>구로5동</option>
+                  <option>궁동</option><option>남구로동</option><option>신도림동</option>
+                  <option>오류1동</option><option>오류2동</option><option>온수동</option><option>천왕동</option><option>항동</option>
+                </select>
+              </div>
+              <input type="text" id="addressStreet" class="form-input mt-xs"
+                placeholder="도로명+건물번호 또는 지번 (예: 구로동로 120)"
+                autocomplete="off" oninput="updateAddressField()" />
+              <input type="text" id="addressDetail" class="form-input mt-xs"
+                placeholder="상세 주소 (예: 101동 502호)" oninput="updateAddressField()" />
+              <input type="hidden" id="address" />
+            </div>
+            <div class="form-group">
+              <label class="form-label required">휴대전화</label>
+              <input type="tel" id="phone" class="form-input" placeholder="010-0000-0000" maxlength="13" oninput="formatPhone(this)" autocomplete="off" />
+            </div>
+            <div class="form-group">
+              <label class="form-label required">가구원수</label>
+              <select id="household" class="form-select">
+                <option value="">선택해 주세요</option>
+                <option>1명</option><option>2명</option><option>3명</option>
+                <option>4명</option><option>5명</option><option>6명 이상</option>
+              </select>
+            </div>
+            <div class="form-group form-full">
+              <label class="form-label required">보호구분 (해당 항목 모두 선택)</label>
+              <div class="checkbox-group">
+                <label class="checkbox-label"><input type="checkbox" name="protection" value="기초생활보장 맞춤형 급여 수급" /> 기초생활보장 맞춤형 급여 수급</label>
+                <label class="checkbox-label"><input type="checkbox" name="protection" value="차상위계층" /> 차상위계층</label>
+                <label class="checkbox-label"><input type="checkbox" name="protection" value="자활사업참여" /> 자활사업참여</label>
+                <label class="checkbox-label"><input type="checkbox" name="protection" value="기타" /> 기타</label>
+                <label class="checkbox-label"><input type="checkbox" name="protection" value="해당없음" /> 해당없음</label>
+              </div>
+            </div>
+            <div class="form-group form-full">
+              <label class="form-label required">가족유무</label>
+              <div class="radio-group">
+                <label class="radio-label"><input type="radio" name="family" value="있음" onclick="toggleFamilyExchange(true)" /> 있음</label>
+                <label class="radio-label"><input type="radio" name="family" value="없음" onclick="toggleFamilyExchange(false)" /> 없음</label>
+              </div>
+            </div>
+            <div class="form-group form-full" id="familyExchangeGroup" style="display:none">
+              <label class="form-label">가족 교류 여부</label>
+              <div class="radio-group flex-wrap">
+                <label class="radio-label"><input type="radio" name="familyExchange" value="주 1회 이상" /> 주 1회 이상</label>
+                <label class="radio-label"><input type="radio" name="familyExchange" value="월 1회 이상" /> 월 1회 이상</label>
+                <label class="radio-label"><input type="radio" name="familyExchange" value="월 1회 미만이나 교류 있음" /> 월 1회 미만이나 교류 있음</label>
+                <label class="radio-label"><input type="radio" name="familyExchange" value="교류 없음" /> 교류 없음</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label required">경제활동</label>
+              <select id="employment" class="form-select">
+                <option value="">선택해 주세요</option>
+                <option>상시근로</option><option>임시·일용근로</option>
+                <option>자영업</option><option>직업 없음</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label required">건강상태</label>
+              <select id="health" class="form-select">
+                <option value="">선택해 주세요</option>
+                <option>양호</option><option>장애</option><option>질병</option><option>기타</option>
+              </select>
+            </div>
+            <div class="form-group form-full">
+              <label class="form-label required">주거유형</label>
+              <select id="housingType" class="form-select">
+                <option value="">선택해 주세요</option>
+                <option>아파트(일반)</option><option>아파트(임대)</option>
+                <option>단독주택(지상)</option><option>단독주택(지하)</option><option>단독주택(옥탑)</option>
+                <option>다세대·연립·빌라(지상)</option><option>다세대·연립·빌라(지하)</option><option>다세대·연립·빌라(옥탑)</option>
+                <option>고시원</option><option>쪽방</option><option>숙박시설</option><option>비주거시설</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label required">보유형태</label>
+              <select id="housingOwn" class="form-select">
+                <option value="">선택해 주세요</option>
+                <option>자가</option><option>전세</option><option>월세</option><option>무료임차</option><option>기타</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label required">주거환경</label>
+              <select id="housingCond" class="form-select">
+                <option value="">선택해 주세요</option>
+                <option>양호</option><option>불량(위생불량)</option><option>불량(안전문제)</option><option>불량(기타)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn-primary btn-full" onclick="validateStep1()">다음</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ───────────── STEP 2: 관계 단절 상황 ───────────── -->
+      <section class="step" id="step-2">
+        <div class="card">
+          <div class="step-label">영역 1</div>
+          <h2 class="step-title">관계 단절 상황</h2>
+          <p class="step-period-notice">📅 지난 4주간(한달)의 상황에 대한 질문입니다.</p>
+
+          <div class="section-sub-title">외로움 관련</div>
+          <div class="question-list">
+            <div class="question-item" id="q1-1">
+              <p class="q-text"><span class="q-num">1-1</span> 나는 같이 있어 줄 사람이 부족하다고 자주 느낀다.</p>
+              <div class="scale-group">
+                <label class="scale-label"><input type="radio" name="q1_1" value="1" /><span>(1점) 거의 없다</span></label>
+                <label class="scale-label"><input type="radio" name="q1_1" value="2" /><span>(2점) 조금 그렇다</span></label>
+                <label class="scale-label"><input type="radio" name="q1_1" value="3" /><span>(3점) 자주 그렇다</span></label>
+              </div>
+            </div>
+            <div class="question-item" id="q1-2">
+              <p class="q-text"><span class="q-num">1-2</span> 나는 혼자 남겨진 것 같다고 자주 느낀다.</p>
+              <div class="scale-group">
+                <label class="scale-label"><input type="radio" name="q1_2" value="1" /><span>(1점) 거의 없다</span></label>
+                <label class="scale-label"><input type="radio" name="q1_2" value="2" /><span>(2점) 조금 그렇다</span></label>
+                <label class="scale-label"><input type="radio" name="q1_2" value="3" /><span>(3점) 자주 그렇다</span></label>
+              </div>
+            </div>
+            <div class="question-item" id="q1-3">
+              <p class="q-text"><span class="q-num">1-3</span> 나는 사람들 사이에서 고립되어 있다고 자주 느낀다.</p>
+              <div class="scale-group">
+                <label class="scale-label"><input type="radio" name="q1_3" value="1" /><span>(1점) 거의 없다</span></label>
+                <label class="scale-label"><input type="radio" name="q1_3" value="2" /><span>(2점) 조금 그렇다</span></label>
+                <label class="scale-label"><input type="radio" name="q1_3" value="3" /><span>(3점) 자주 그렇다</span></label>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-sub-title mt-md">사회적 고립 관련
+            <span class="sub-note">도움 줄 사람은 가족·친구·이웃·동료 및 공공기관 담당자도 포함</span>
+          </div>
+          <div class="question-list">
+            <div class="question-item" id="q1-4">
+              <p class="q-text"><span class="q-num">1-4</span> 나는 몸이 아파서 도움이 필요할 때 도움 줄 사람이 있다.</p>
+              <div class="scale-group">
+                <label class="scale-label"><input type="radio" name="q1_4" value="0" /><span>(0점) 있다</span></label>
+                <label class="scale-label"><input type="radio" name="q1_4" value="1" /><span>(1점) 없다</span></label>
+              </div>
+            </div>
+            <div class="question-item" id="q1-5">
+              <p class="q-text"><span class="q-num">1-5</span> 나는 낙심하거나 우울해서 이야기상대가 필요할 때 들어줄 사람이 있다.</p>
+              <div class="scale-group">
+                <label class="scale-label"><input type="radio" name="q1_5" value="0" /><span>(0점) 있다</span></label>
+                <label class="scale-label"><input type="radio" name="q1_5" value="1" /><span>(1점) 없다</span></label>
+              </div>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn-secondary" onclick="goStep(1)">이전</button>
+            <button class="btn-primary" onclick="validateStep2()">다음</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ───────────── STEP 3: 일상생활 관리 ───────────── -->
+      <section class="step" id="step-3">
+        <div class="card">
+          <div class="step-label">영역 2</div>
+          <h2 class="step-title">일상생활 관리 상황</h2>
+          <p class="step-period-notice">📅 지난 4주간(한달)의 상황에 대한 질문입니다. 각 항목에 대해 답해 주세요.</p>
+
+          <div class="question-list">
+            <div class="question-item" id="q2-1">
+              <p class="q-text"><span class="q-num">2-1</span> <span class="q-tag">위생관리</span> 개인위생과 집안 청소 등 관리가 되고 있다.</p>
+              <div class="yn-group">
+                <label class="yn-label yes"><input type="radio" name="q2_1" value="yes" /><span>그렇다</span></label>
+                <label class="yn-label no"><input type="radio" name="q2_1" value="no" /><span>아니다</span></label>
+              </div>
+            </div>
+            <div class="question-item" id="q2-2">
+              <p class="q-text"><span class="q-num">2-2</span> <span class="q-tag">식사관리</span> 끼니를 거르거나 폭식하지 않고 꾸준히 식사관리를 한다.</p>
+              <div class="yn-group">
+                <label class="yn-label yes"><input type="radio" name="q2_2" value="yes" /><span>그렇다</span></label>
+                <label class="yn-label no"><input type="radio" name="q2_2" value="no" /><span>아니다</span></label>
+              </div>
+            </div>
+            <div class="question-item" id="q2-3">
+              <p class="q-text"><span class="q-num">2-3</span> <span class="q-tag">재정관리</span> 생활비, 용돈과 공과금 납부를 잘 관리한다.</p>
+              <div class="yn-group">
+                <label class="yn-label yes"><input type="radio" name="q2_3" value="yes" /><span>그렇다</span></label>
+                <label class="yn-label no"><input type="radio" name="q2_3" value="no" /><span>아니다</span></label>
+              </div>
+            </div>
+            <div class="question-item" id="q2-4">
+              <p class="q-text"><span class="q-num">2-4</span> <span class="q-tag">건강관리</span> 건강에 문제가 있을 때 병원도 가고 약도 잘 챙겨 먹는다.</p>
+              <div class="yn-group">
+                <label class="yn-label yes"><input type="radio" name="q2_4" value="yes" /><span>그렇다</span></label>
+                <label class="yn-label no"><input type="radio" name="q2_4" value="no" /><span>아니다</span></label>
+              </div>
+            </div>
+            <div class="question-item" id="q2-5">
+              <p class="q-text"><span class="q-num">2-5</span> <span class="q-tag">외출/은둔</span> 혼자 필요한 활동을 하거나 누군가를 만나기 위해 외출한다.</p>
+              <div class="yn-group">
+                <label class="yn-label yes"><input type="radio" name="q2_5" value="yes" /><span>그렇다</span></label>
+                <label class="yn-label no"><input type="radio" name="q2_5" value="no" /><span>아니다</span></label>
+              </div>
+            </div>
+            <div class="question-item" id="q2-6">
+              <p class="q-text"><span class="q-num">2-6</span> <span class="q-tag">대인관계</span> 다른 사람과 직접 만나서 대화하거나 교류한다.</p>
+              <div class="yn-group">
+                <label class="yn-label yes"><input type="radio" name="q2_6" value="yes" /><span>그렇다</span></label>
+                <label class="yn-label no"><input type="radio" name="q2_6" value="no" /><span>아니다</span></label>
+              </div>
+            </div>
+            <div class="question-item" id="q2-7">
+              <p class="q-text"><span class="q-num">2-7</span> <span class="q-tag">생활패턴</span> 일상생활이나 수면 패턴이 규칙적이다.</p>
+              <div class="yn-group">
+                <label class="yn-label yes"><input type="radio" name="q2_7" value="yes" /><span>그렇다</span></label>
+                <label class="yn-label no"><input type="radio" name="q2_7" value="no" /><span>아니다</span></label>
+              </div>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn-secondary" onclick="goStep(2)">이전</button>
+            <button class="btn-primary" onclick="validateStep3()">다음</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ───────────── STEP 4: 위기 상황 (조건부) ───────────── -->
+      <section class="step" id="step-4">
+        <div class="card">
+          <div class="step-label">영역 3</div>
+          <h2 class="step-title">위기 상황</h2>
+          <div class="notice-box">
+            관계 단절과 일상생활 관리 두 영역 모두 도움이 필요한 것으로 확인되어 추가 질문을 드립니다.
+          </div>
+          <p class="step-desc">해당하는 항목에 솔직하게 답해 주세요.</p>
+
+          <div class="question-list">
+            <div class="question-item" id="q3-1">
+              <p class="q-text"><span class="q-num">3-1</span> 장애나 만성적 질병이 있고 관리하고 있지 않다.<br><span class="q-sub">(암, 알콜중독, 폐렴, 당뇨, 간질환, 신장질환, 정신질환 등)</span></p>
+              <div class="yn-group">
+                <label class="yn-label yes"><input type="radio" name="q3_1" value="yes" /><span>그렇다</span></label>
+                <label class="yn-label no"><input type="radio" name="q3_1" value="no" /><span>아니다</span></label>
+              </div>
+            </div>
+            <div class="question-item" id="q3-2">
+              <p class="q-text"><span class="q-num">3-2</span> 돌봄 서비스 및 치료(입원)를 해야 하지만 이용하지 않거나 중단했다.</p>
+              <div class="yn-group">
+                <label class="yn-label yes"><input type="radio" name="q3_2" value="yes" /><span>그렇다</span></label>
+                <label class="yn-label no"><input type="radio" name="q3_2" value="no" /><span>아니다</span></label>
+              </div>
+            </div>
+            <div class="question-item" id="q3-3">
+              <p class="q-text"><span class="q-num">3-3</span> 나는 지난 1년간 심각하게 자살을 생각해 본 적이 있다.</p>
+              <div class="yn-group">
+                <label class="yn-label yes"><input type="radio" name="q3_3" value="yes" /><span>그렇다</span></label>
+                <label class="yn-label no"><input type="radio" name="q3_3" value="no" /><span>아니다</span></label>
+              </div>
+            </div>
+            <div class="question-item" id="q3-4">
+              <p class="q-text"><span class="q-num">3-4</span> 이혼, 사별 등 가까운 사람과의 이별로 고통 받았고 지금도 이어진다.</p>
+              <div class="yn-group">
+                <label class="yn-label yes"><input type="radio" name="q3_4" value="yes" /><span>그렇다</span></label>
+                <label class="yn-label no"><input type="radio" name="q3_4" value="no" /><span>아니다</span></label>
+              </div>
+            </div>
+            <div class="question-item" id="q3-5">
+              <p class="q-text"><span class="q-num">3-5</span> 실직, 실패, 사기피해, 파산, 채무불이행 등으로 고통 받았고 지금도 이어진다.</p>
+              <div class="yn-group">
+                <label class="yn-label yes"><input type="radio" name="q3_5" value="yes" /><span>그렇다</span></label>
+                <label class="yn-label no"><input type="radio" name="q3_5" value="no" /><span>아니다</span></label>
+              </div>
+            </div>
+            <div class="question-item" id="q3-6">
+              <p class="q-text"><span class="q-num">3-6</span> 치매, 중증질환 등으로 돌봄이 필요한 가족과 동거하고 전적으로 돌보고 있어서 힘들다.</p>
+              <div class="yn-group">
+                <label class="yn-label yes"><input type="radio" name="q3_6" value="yes" /><span>그렇다</span></label>
+                <label class="yn-label no"><input type="radio" name="q3_6" value="no" /><span>아니다</span></label>
+              </div>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn-secondary" onclick="goStep(3)">이전</button>
+            <button class="btn-primary" onclick="validateStep4()">다음</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ───────────── STEP 5: 개인정보 동의 ───────────── -->
+      <section class="step" id="step-5">
+        <div class="card">
+          <div class="step-label">개인정보 동의</div>
+          <h2 class="step-title">개인정보 수집·활용 및<br>제3자 제공동의</h2>
+          <p class="step-desc">
+            "사회적 고립 1인가구 실태조사"는 개인정보보호법 제15조에 의거하여
+            개인정보의 수집 및 이용에 관한 정보주체의 동의 절차를 준수합니다.
+          </p>
+
+          <div class="consent-block">
+            <div class="consent-title">① 기본 개인정보 수집·이용</div>
+            <div class="consent-detail">
+              <strong>수집 항목:</strong> 성명, 주민등록번호, 연락처, 주소<br>
+              <strong>이용 목적:</strong> 구 보건·복지·고용·마을 업무관련기관 및 서비스 협력기관 정보공유<br>
+              <strong>보유기간:</strong> 해당 지원·서비스 제공 기간으로부터 5년 보관 후 파기<br>
+              <span class="consent-note">※ 동의를 거부할 권리가 있으며, 거부 시 복지상담 연계 서비스 이용에 제한될 수 있습니다.</span>
+            </div>
+            <div class="consent-check-row">
+              <label class="consent-check-label"><input type="radio" name="consent1" value="동의함" /> 동의함</label>
+              <label class="consent-check-label"><input type="radio" name="consent1" value="동의하지 않음" /> 동의하지 않음</label>
+            </div>
+          </div>
+
+          <div class="consent-block">
+            <div class="consent-title">선택정보 및 민감정보 수집·이용</div>
+            <div class="consent-detail">
+              <strong>수집 항목:</strong> 보호구분, 주거실태, 가족사항, 건강상황, 장애등급, 사회적상황 등<br>
+              <strong>보유기간:</strong> 해당 지원·서비스 제공 기간으로부터 5년 보관 후 파기
+            </div>
+            <div class="consent-check-row">
+              <label class="consent-check-label"><input type="radio" name="consent2" value="동의함" /> 동의함</label>
+              <label class="consent-check-label"><input type="radio" name="consent2" value="동의하지 않음" /> 동의하지 않음</label>
+            </div>
+          </div>
+
+          <div class="consent-block">
+            <div class="consent-title">② 개인정보 제3자 제공</div>
+            <div class="consent-detail">
+              <strong>제공받는 곳:</strong> 정부 공공기관, 사회복지 민간기관, 결연후원단체<br>
+              <strong>이용 목적:</strong> 대상자 욕구에 따른 서비스 및 프로그램 정보제공<br>
+              <strong>보유기간:</strong> 해당 지원·서비스 제공 기간으로부터 5년 보관 후 파기
+            </div>
+            <div class="consent-check-row">
+              <label class="consent-check-label"><input type="radio" name="consent3" value="동의함" /> 동의함</label>
+              <label class="consent-check-label"><input type="radio" name="consent3" value="동의하지 않음" /> 동의하지 않음</label>
+            </div>
+          </div>
+
+          <div class="consent-block">
+            <div class="consent-title">서울시복지재단 개인정보 제공</div>
+            <div class="consent-detail">
+              <strong>이용 목적:</strong> 고립가구 위기대응총괄시스템 운영, 서비스 정보제공<br>
+              <strong>보유기간:</strong> 해당 지원·서비스 제공 기간으로부터 5년 보관 후 파기
+            </div>
+            <div class="consent-check-row">
+              <label class="consent-check-label"><input type="radio" name="consent4" value="동의함" /> 동의함</label>
+              <label class="consent-check-label"><input type="radio" name="consent4" value="동의하지 않음" /> 동의하지 않음</label>
+            </div>
+          </div>
+
+          <div class="consent-final">
+            <label class="consent-final-label">
+              <input type="checkbox" id="consentFinal" />
+              <span>본인은 개인정보 수집·활용 및 제3자 제공 동의에 대하여 안내받았음을 확인합니다.<br>
+              <small>※ 만 14세 미만 아동의 경우 법정대리인의 동의가 필요합니다. (개인정보보호법 제15조~제19조)</small></span>
+            </label>
+          </div>
+
+          <!-- 제출 날짜 표시 -->
+          <div class="consent-date-row">
+            <span id="consentDateDisplay"></span>
+          </div>
+
+          <!-- 동의자 서명 -->
+          <div class="signature-block">
+            <div class="signature-label">동의자 서명 <span class="required-mark">*</span></div>
+            <div class="signature-hint">아래 박스 안에 손가락 또는 마우스로 서명해 주세요.</div>
+            <div class="signature-wrap">
+              <canvas id="signatureCanvas"></canvas>
+            </div>
+            <div class="signature-actions">
+              <button type="button" class="btn-clear-sig" onclick="clearSignature()">서명 지우기</button>
+              <span class="sig-status" id="sigStatus"></span>
+            </div>
+          </div>
+
+          <!-- 만 14세 미만 보호자 서명 (자동 표시) -->
+          <div id="guardianSignBlock" style="display:none;">
+            <div class="guardian-notice">
+              <strong>⚠️ 만 14세 미만 아동</strong>으로 확인되었습니다.<br>
+              법정대리인(보호자)의 서명이 필요합니다.
+            </div>
+            <div class="signature-block" style="margin-top:12px;">
+              <div class="signature-label">법정대리인(보호자) 서명 <span class="required-mark">*</span></div>
+              <div class="signature-hint">보호자가 아래 박스에 서명해 주세요.</div>
+              <div class="signature-wrap">
+                <canvas id="guardianSignatureCanvas"></canvas>
+              </div>
+              <div class="signature-actions">
+                <button type="button" class="btn-clear-sig" onclick="clearGuardianSignature()">서명 지우기</button>
+                <span class="sig-status" id="guardianSigStatus"></span>
+              </div>
+            </div>
+            <div class="form-group" style="margin-top:10px;">
+              <label class="form-label required">법정대리인 성명</label>
+              <input type="text" id="guardianName" class="form-input" placeholder="보호자 성명을 입력해 주세요" />
+            </div>
+            <div class="form-group" style="margin-top:8px;">
+              <label class="form-label required">관계</label>
+              <select id="guardianRelation" class="form-select">
+                <option value="">선택</option>
+                <option>부</option><option>모</option><option>조부</option><option>조모</option>
+                <option>법정후견인</option><option>기타</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn-secondary" id="consentBackBtn" onclick="goConsentBack()">이전</button>
+            <button class="btn-primary" onclick="validateStep5()">제출하기</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ───────────── STEP 6: 결과 화면 ───────────── -->
+      <section class="step" id="step-6">
+        <div class="card result-card">
+          <div class="result-check">✓</div>
+          <h2 class="result-title">응답이 완료되었습니다</h2>
+          <p class="result-sub">조사에 참여해 주셔서 감사합니다.</p>
+
+          <div class="result-sent-box">
+            <div class="result-sent-icon">📨</div>
+            <div class="result-sent-text">
+              입력하신 정보가 <strong>화원종합사회복지관</strong>으로<br>안전하게 전송되었습니다.
+            </div>
+            <div class="result-sent-sub">담당자가 검토 후 연락드릴 예정입니다.</div>
+          </div>
+
+          <div class="result-warm-box">
+            <div class="result-warm-icon">🤝</div>
+            <div class="result-warm-text">
+              응답해 주신 내용을 바탕으로<br>
+              <strong>맞춤형 복지서비스를 연결해 드리겠습니다.</strong>
+            </div>
+            <div class="result-warm-sub">
+              담당자가 직접 연락드려 필요한 서비스와<br>
+              지원 방법을 함께 안내해 드릴게요.
+            </div>
+          </div>
+
+          <div id="resultTypeBox" style="display:none"></div>
+          <div id="resultScores" style="display:none"></div>
+          <div id="resultService" style="display:none"></div>
+          <div id="resultCrisisNotice" style="display:none"></div>
+
+          <div class="result-contact-box">
+            <div class="result-contact-title">사업 문의</div>
+            <div class="result-contact-info">
+              <strong>화원종합사회복지관</strong><br>
+              서울특별시 구로구 벚꽃로484<br>
+              <a href="tel:02-837-0761" class="result-tel">02-837-0761</a><br>
+              <a href="https://www.hwawon.org/" target="_blank" style="font-size:13px;color:#0052A4;">www.hwawon.org</a>
+            </div>
+          </div>
+
+          <div style="margin-top:12px; text-align:center;">
+            <button onclick="checkAdminPw()" style="background:none;border:none;color:#ccc;font-size:11px;cursor:pointer;font-family:inherit;">관리자</button>
+          </div>
+          <div id="adminPrintArea" style="display:none;margin-top:8px;">
+            <button class="btn-primary btn-full" onclick="openPrintPage()" style="background:#0052A4;">🖨️ 결과지 출력 (관리자)</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <img src="logo-hwawon.png" alt="화원종합사회복지관" class="footer-logo" />
+      <p>화원종합사회복지관 · 서울특별시 구로구 벚꽃로484</p>
+      <p>문의 <a href="tel:02-837-0761" style="color:inherit;">02-837-0761</a> · <a href="https://www.hwawon.org/" target="_blank" style="color:inherit;">www.hwawon.org</a></p>
+    </footer>
+  </div>
+
+  <script src="print-render.js?v=1775193321"></script>
+  <script src="app.js?v=1775193321"></script>
+
+    <div id="printOverlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#eee;overflow-y:auto;z-index:9999;pointer-events:none;"></div>
+
+</body>
+</html>
