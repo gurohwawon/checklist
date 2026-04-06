@@ -192,6 +192,7 @@ body {
   font-weight: 600;
   color: var(--gray-700);
 }
+.form-hint { font-size: 12px; font-weight: 400; color: var(--gray-500); margin-left: 2px; }
 .form-label.required::after {
   content: ' *';
   color: var(--red-600);
@@ -1217,7 +1218,7 @@ input[type="tel"].form-input {
               </select>
             </div>
             <div class="form-group form-full">
-              <label class="form-label required">이용자 구분</label>
+              <label class="form-label required">이용자 구분 <span class="form-hint">(복지관 이용 이력 확인)</span></label>
               <div class="radio-group">
                 <label class="radio-item"><input type="radio" name="userType" value="기존 이용자"> 기존 이용자</label>
                 <label class="radio-item"><input type="radio" name="userType" value="신규 이용자"> 신규 이용자</label>
