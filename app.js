@@ -311,7 +311,10 @@ function submitNeeds() {
   if (checked.length === 0) return showToast('필요한 서비스를 1개 이상 선택해 주세요.');
   const needsValue = checked.join(', ');
 
-  // 구글 시트 욕구내용 전송
+  // submitForm 먼저 실행 → resultType 확정
+  submitForm();
+
+  // 구글 시트 욕구내용 전송 (submitForm 후 resultType 사용)
   if (SHEET_ENDPOINT && SHEET_ENDPOINT !== 'YOUR_APPS_SCRIPT_ENDPOINT_HERE') {
     const name   = document.getElementById('name').value.trim();
     const birth  = document.getElementById('birth').value.trim();
@@ -319,7 +322,7 @@ function submitNeeds() {
     const dong   = document.getElementById('addrDong')?.value || '';
     const phone  = document.getElementById('phone').value.trim();
     const age    = getCalcAge();
-    const resultType = document.getElementById('resultTypeBox')?.dataset?.code || window._lastResultType || '';
+    const resultType = window._lastResultType || '';
 
     fetch(SHEET_ENDPOINT, {
       method: 'POST',
@@ -334,8 +337,6 @@ function submitNeeds() {
       })
     }).catch(err => console.warn('욕구 전송 오류:', err));
   }
-
-  submitForm();
 }
 
 function submitForm() {
@@ -525,7 +526,7 @@ function initSignature() {
   ctx = canvas.getContext('2d');
   ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
   ctx.strokeStyle = '#1A1A1A';
-  ctx.lineWidth   = 2.2;
+  ctx.lineWidth   = 3.5;
   ctx.lineCap     = 'round';
   ctx.lineJoin    = 'round';
 
